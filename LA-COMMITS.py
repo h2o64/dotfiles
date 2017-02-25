@@ -125,13 +125,15 @@ def picks():
 	ret_topic = [0]*len(target)
 	ret_numbers = [0]*len(target)
 	ret_subject = [0]*len(target)
+	print 'CURRENT_DIR = $1'
 	for k in range(len(target)):
 		# Reverse everything to show min first
 		# TODO: Fix this in quicksort
 		ret_topic[k] = copy.deepcopy(topic[k][::-1])
 		ret_numbers[k] = copy.deepcopy(numbers[k][::-1])
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
+		print 'cd $CURRENT_DIR' + project[k].replace('LineageOS/android', '').replace('_','/')
 		for j in range(len(numbers[k])):
-			print 'gerrit-cherry-pick ssh://h2o64@review.lineageos.org:29418/LineageOS/' + project[k] + ' ' + ret_numbers[k][j] + ' # ' + ret_subject[k][j] + ' - ' + updated[k][j]
+			print 'gerrit-cherry-pick ssh://h2o64@review.lineageos.org:29418/' + project[k] + ' ' + ret_numbers[k][j] + ' # ' + ret_subject[k][j] + ' - ' + updated[k][j]
 	for l in range(len(target)):
 		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]))
