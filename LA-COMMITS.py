@@ -30,6 +30,10 @@ def quicksort(t):
 				t2.append(x)
 	return quicksort(t1)+[pivot]+quicksort(t2)
 
+def get_patchset(commit_id):
+	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + commit_id + ' --current-patch-set | grep "number: " | grep -v "' + commit_id + '"').read()
+	return ((tmp.replace('number: ', '')).replace('\n','')).replace(' ','')
+
 def filter(liste):
 	# Filter data
 	tmp_liste = []
@@ -137,7 +141,8 @@ def picks():
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
 		print 'cd $CURRENT_DIR' + project[k].replace('LineageOS/android', '').replace('_','/')
 		for j in range(commits_count[k]):
-			print 'gerrit-cherry-pick ssh://h2o64@review.lineageos.org:29418/' + project[k] + ' ' + ret_numbers[k][j] + ' # ' + ret_subject[k][j] + ' - ' + updated[k][j]
+			print 'git fetch ssh://h2o64@review.lineageos.org:29418/' + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
+		print 'cd $CURRENT_DIR'
 	for l in range(repos_count):
 		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]))
 
