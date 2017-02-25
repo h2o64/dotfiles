@@ -5,6 +5,8 @@ import copy
 
 curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+owner:"theh2o64@gmail.com"+project:LineageOS/'
 target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common"]
+repos_count = len(target)
+commits_count = [0]*repos_count
 
 # Taken from http://stackoverflow.com/questions/8777753/converting-datetime-date-to-utc-timestamp-in-python/8778548#8778548
 # and http://stackoverflow.com/questions/19068269/how-to-convert-a-string-date-into-datetime-format-in-python
@@ -59,12 +61,12 @@ def gather(remotes):
 
 # Filter and un-split
 def split(project_global, topic_global, numbers_global, subject_global,updated_global):
-	project_local = [0]*len(target)
-	topic_local = [0]*len(target)
-	numbers_local = [0]*len(target)
-	subject_local = [0]*len(target)
-	updated_local = [0]*len(target)
-	for k in range(len(target)):
+	project_local = [0]*repos_count
+	topic_local = [0]*repos_count
+	numbers_local = [0]*repos_count
+	subject_local = [0]*repos_count
+	updated_local = [0]*repos_count
+	for k in range(repos_count):
 		project_local[k] = project_global[k]
 		topic_local[k] = filter(topic_global[k])
 		numbers_local[k] = filter(numbers_global[k])
@@ -77,8 +79,8 @@ def split(project_global, topic_global, numbers_global, subject_global,updated_g
 def results():
 	project_global,topic_global,numbers_global,subject_global,updated_global = gather(target)
 	project,topic,numbers,subject,updated = split(project_global, topic_global, numbers_global, subject_global,updated_global)
-	for k in range(len(target)):
-		for j in range(len(numbers[k])):
+	for k in range(repos_count):
+		for j in range(commits_count[k]):
 			print('#####################')
 			print('Project : ' + project[k])
 			print('Change number : ' + numbers[k][j])
@@ -86,7 +88,7 @@ def results():
 			print('Last updated : ' + updated[k][j])
 			print('Timestamp : ' + str(utctotimestamp(updated[k][j])))
 			if not topic[k][j] == 'null': print('Topic : ' + topic[k][j])
-	for l in range(len(target)):
+	for l in range(repos_count):
 		print 'Number of commits for ' + project[l] + ' = ' + str(len(numbers[l]))
 
 # Filtering to show last updated last
@@ -95,13 +97,13 @@ def order(topic_fil,numbers_fil,subject_fil,updated_fil):
 	dummy_copy = copy.deepcopy(updated_fil)
 	new_time_sorted = copy.deepcopy(updated_fil)
 	# Keep UTC alphabetic time sorted
-	for k in range(len(target)): new_time_sorted[k] = quicksort(updated_fil[k])
+	for k in range(repos_count): new_time_sorted[k] = quicksort(updated_fil[k])
 	# Convert the timestamp UTC to numerical
-	for k in range(len(target)):
-		for j in range(len(numbers[k])):
+	for k in range(repos_count):
+		for j in range(commits_count[k]):
 			new_time[k][j] = (utctotimestamp(dummy_copy[k][j]),k,j)
 	# Sort numerical timestamp
-	for k in range(len(target)): new_time[k] = copy.deepcopy(quicksort(new_time[k]))
+	for k in range(repos_count): new_time[k] = copy.deepcopy(quicksort(new_time[k]))
 	# print str(new_time)
 	topic_new = copy.deepcopy(topic_fil)
 	numbers_new = copy.deepcopy(numbers_fil)
@@ -112,8 +114,8 @@ def order(topic_fil,numbers_fil,subject_fil,updated_fil):
 	return topic_new,numbers_new,subject_new,new_time_sorted
 
 def time_swap(old, new, time_ref, new_time_bis, old_time):
-	for k in range(len(target)):
-		for j in range(len(numbers[k])):
+	for k in range(repos_count):
+		for j in range(commits_count[k]):
 			# print 'old time = ' + str(old_time[k][j]) + ' | new time = ' + str(new_time_bis[k][j])
 			new = old[time_ref[k][j][1]][time_ref[k][j][2]]
 
@@ -121,19 +123,23 @@ def time_swap(old, new, time_ref, new_time_bis, old_time):
 def picks():
 	project_global,topic_global,numbers_global,subject_global,updated_global = gather(target)
 	project,topic,numbers,subject,updated = split(project_global, topic_global, numbers_global, subject_global,updated_global)
+	for k in range(repos_count): commits_count[k] = len(numbers[k])
 	topic,numbers,subject,updated = order(topic,numbers,subject,updated)
-	ret_topic = [0]*len(target)
-	ret_numbers = [0]*len(target)
-	ret_subject = [0]*len(target)
-	print 'CURRENT_DIR = $1'
-	for k in range(len(target)):
+	ret_topic = [0]*repos_count
+	ret_numbers = [0]*repos_count
+	ret_subject = [0]*repos_count
+	print 'CURRENT_DIR=$1'
+	for k in range(repos_count):
 		# Reverse everything to show min first
 		# TODO: Fix this in quicksort
 		ret_topic[k] = copy.deepcopy(topic[k][::-1])
 		ret_numbers[k] = copy.deepcopy(numbers[k][::-1])
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
 		print 'cd $CURRENT_DIR' + project[k].replace('LineageOS/android', '').replace('_','/')
-		for j in range(len(numbers[k])):
+		for j in range(commits_count[k]):
 			print 'gerrit-cherry-pick ssh://h2o64@review.lineageos.org:29418/' + project[k] + ' ' + ret_numbers[k][j] + ' # ' + ret_subject[k][j] + ' - ' + updated[k][j]
-	for l in range(len(target)):
+	for l in range(repos_count):
 		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]))
+
+if __name__ == '__main__':
+    picks()
