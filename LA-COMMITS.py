@@ -9,6 +9,7 @@ def filter(liste):
 		if liste[cursor:k].endswith('\n'):
 			tmp_liste.append(liste[cursor:k-1])
 			cursor = k
+		if k == len(liste) - 1: tmp_liste.append(liste[cursor:k])
 	return tmp_liste
 
 def gather(remotes):
@@ -41,6 +42,7 @@ def split(project_global, topic_global, numbers_global, subject_global,updated_g
 		numbers_local[k] = filter(numbers_global[k])
 		subject_local[k] = filter(subject_global[k])
 		updated_local[k] = filter(updated_global[k])
+		# print 'k = ' + str(k) + ' | numbers_local[k] = ' + str(numbers_local[k])
 	return (project_local,topic_local,numbers_local,subject_local,updated_local)
 
 # Print data
