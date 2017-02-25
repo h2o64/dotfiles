@@ -1,4 +1,15 @@
+from __future__ import division
+import datetime
 import os
+
+# Taken from http://stackoverflow.com/questions/8777753/converting-datetime-date-to-utc-timestamp-in-python/8778548#8778548
+# and http://stackoverflow.com/questions/19068269/how-to-convert-a-string-date-into-datetime-format-in-python
+def totimestamp(dt, epoch=datetime.datetime(1970,1,1)):
+    td = dt - epoch
+    return td.total_seconds()
+
+def utctotimestamp(string):
+	return totimestamp(datetime.datetime.strptime(string[:len(string)-4], "%Y-%m-%d %H:%M:%S.%f"))
 
 def filter(liste):
 	# Filter data
@@ -58,6 +69,7 @@ def results():
 			print('Change number : ' + numbers[k][j])
 			print('Subject : ' + subject[k][j])
 			print('Last updated : ' + updated[k][j])
+			print('Timestamp : ' + str(utctotimestamp(updated[k][j])))
 			if not topic[k][j] == 'null': print('Topic : ' + topic[k][j])
 	for l in range(len(target)):
 		print 'Number of commits for ' + project[l] + ' = ' + str(len(numbers[l]))
