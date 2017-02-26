@@ -126,8 +126,7 @@ def time_swap(old, new, time_ref, new_time_bis, old_time):
 
 # Cherry picks
 def picks():
-	project_global,topic_global,numbers_global,subject_global,updated_global = gather(target)
-	project,topic,numbers,subject,updated = split(project_global, topic_global, numbers_global, subject_global,updated_global)
+	project,topic,numbers,subject,updated = split(gather(target))
 	for k in range(repos_count): commits_count[k] = len(numbers[k])
 	topic,numbers,subject,updated = order(topic,numbers,subject,updated)
 	ret_topic = [0]*repos_count
