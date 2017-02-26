@@ -5,6 +5,7 @@ import copy
 
 curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+owner:"theh2o64@gmail.com"+project:LineageOS/'
 target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common"]
+commit_blacklist = [[""],[''],['163364'],[''],['']]
 repos_count = len(target)
 commits_count = [0]*repos_count
 
@@ -141,10 +142,10 @@ def picks():
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
 		print 'cd $CURRENT_DIR' + project[k].replace('LineageOS/android', '').replace('_','/')
 		for j in range(commits_count[k]):
-			print 'git fetch ssh://h2o64@review.lineageos.org:29418/' + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
+			if ret_numbers[k][j] not in commit_blacklist[k]: print 'git fetch ssh://h2o64@review.lineageos.org:29418/' + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
 		print 'cd $CURRENT_DIR'
 	for l in range(repos_count):
-		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]))
+		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]) - len(commit_blacklist[l]))
 
 if __name__ == '__main__':
     picks()
