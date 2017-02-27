@@ -158,7 +158,7 @@ def picks():
 				for i in range(len(id_black_per_rom)):
 					if ret_numbers[k][j] == id_black_per_rom[i]: banned_rom_ind.append(i)
 				for m in banned_rom_ind:
-					tmp += '$CURRENT_DIR_NAME != ' + rom_black_per_rom[m] + ' '
+					tmp += '$CURRENT_DIR_NAME != "' + rom_black_per_rom[m] + '" '
 					if m+1 < len(banned_rom_ind): tmp += ' || '
 				if ret_numbers[k][j] in id_black_per_rom:
 					print tmp + ' ]; then'
