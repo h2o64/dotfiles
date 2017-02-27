@@ -6,6 +6,9 @@ import copy
 curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+owner:"theh2o64@gmail.com"+project:LineageOS/'
 target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common"]
 commit_blacklist = [[""],[''],['163364'],[''],['']]
+word_blaclist = [[""],[''],[''],[''],['']]
+id_black_per_rom = ['162848', '162848']
+rom_black_per_rom = ['DU', 'SLIM'] # Easier than tuplet
 repos_count = len(target)
 commits_count = [0]*repos_count
 
@@ -133,7 +136,11 @@ def picks():
 	ret_topic = [0]*repos_count
 	ret_numbers = [0]*repos_count
 	ret_subject = [0]*repos_count
+	git_fetch = 'git fetch ssh://h2o64@review.lineageos.org:29418/'
+	banned_rom_ind = []
+	tmp = 'if [ '
 	print 'CURRENT_DIR=$1'
+	print 'CURRENT_DIR_NAME=basename $CURRENT_DIR'
 	for k in range(repos_count):
 		# Reverse everything to show min first
 		# TODO: Fix this in quicksort
@@ -142,7 +149,17 @@ def picks():
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
 		print 'cd $CURRENT_DIR' + project[k].replace('LineageOS/android', '').replace('_','/')
 		for j in range(commits_count[k]):
-			if ret_numbers[k][j] not in commit_blacklist[k]: print 'git fetch ssh://h2o64@review.lineageos.org:29418/' + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
+			if ret_numbers[k][j] not in commit_blacklist[k]:
+				for i in range(len(id_black_per_rom)):
+					if ret_numbers[k][j] == id_black_per_rom[i]: banned_rom_ind.append(i)
+				for m in banned_rom_ind:
+					tmp += '$CURRENT_DIR_NAME != ' + rom_black_per_rom[m] + ' '
+					if m+1 < len(banned_rom_ind): tmp += ' || '
+				if ret_numbers[k][j] in id_black_per_rom:
+					print tmp + ' ]; then'
+					tmp = 'if [ '
+				print git_fetch + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
+				if ret_numbers[k][j] in id_black_per_rom: print 'fi'
 		print 'cd $CURRENT_DIR'
 	for l in range(repos_count):
 		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]) - len(commit_blacklist[l]))
