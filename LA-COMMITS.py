@@ -7,15 +7,15 @@ curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:ope
 target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common"]
 
 # Blacklisting
-commit_blacklist = [[''],[''],['163364'],[''],['']]
+commit_blacklist = [[''],[''],[''],[''],['']]
 word_blacklist = ['','','','','']
 id_black_per_rom = ['162848', '162848','163078','163078']
 rom_black_per_rom = ['DU', 'SLIM','DU', 'SLIM'] # Easier than tuplet
 
 # Extra commits
-github_extra = ['ashwinr64/proprietary_vendor_yu/commit/9ccd8fa3b1c7de619931722fd423e3a2051c9f69']
-github_extra_branch = ['cm-14.1']
-gerrit_extra = ['163803']
+github_extra = ['']
+github_extra_branch = ['']
+gerrit_extra = ['']
 
 # Global variables
 repos_count = len(target)
@@ -147,7 +147,7 @@ def picks():
 	ret_subject = [0]*repos_count
 	git_fetch = 'git fetch ssh://h2o64@review.lineageos.org:29418/'
 	banned_rom_ind = []
-	tmp = 'if [ '
+	tmp = 'if '
 	blacklist_word_count = [0]*repos_count
 	word_blacklist_bool = True
 	print 'CURRENT_DIR=$1'
@@ -167,9 +167,9 @@ def picks():
 				for i in range(len(id_black_per_rom)):
 					if ret_numbers[k][j] == id_black_per_rom[i]: banned_rom_ind.append(i)
 				for m in banned_rom_ind:
-					tmp += '$CURRENT_DIR_NAME != "' + rom_black_per_rom[m] + '" '
-					if m+1 < len(banned_rom_ind): tmp += ' || '
-				if ret_numbers[k][j] in id_black_per_rom: print tmp + ' ]; then'
+					tmp += '[ ! $CURRENT_DIR_NAME == "' + rom_black_per_rom[m] + '" ]'
+					if not m == banned_rom_ind[len(banned_rom_ind)-1]: tmp += ' || '
+				if ret_numbers[k][j] in id_black_per_rom: print tmp + '; then'
 				tmp = 'if [ '
 				print git_fetch + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
 				if ret_numbers[k][j] in id_black_per_rom: print 'fi'
@@ -179,9 +179,8 @@ def picks():
 		print 'cd $CURRENT_DIR'
 	cherry = ''
 	suffix = ''
-	remote = ''
 	is_proprietary = False
-	if not len(github_extra) == 0:
+	if not '' in github_extra:
 		for ind in range(len(github_extra)):
 			commit = github_extra[ind]
 			if 'proprietary_vendor' in commit: is_proprietary = True
@@ -189,19 +188,17 @@ def picks():
 				suffix = copy.deepcopy(commit[i:])
 				if suffix.startswith('android_') or suffix.startswith('proprietary_vendor_'):
 					suffix = copy.deepcopy(suffix[:len(suffix)-8-40])
-					remote = suffix
 					if is_proprietary: print 'cd ' + (suffix.replace('proprietary_','')).replace('_','/')
 					else:  print 'cd ' + (suffix.replace('android_','')).replace('_','/')
-					print 'git fetch ' + remote +  ' ' + github_extra_branch[ind]
+					print 'git fetch https://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
 					print 'git cherry-pick ' + commit[-40:]
 					print 'cd $CURRENT_DIR'
 					# Reset
 					cherry = ''
 					suffix = ''
-					remote = ''
 					break
 	commit_details = []
-	if not len(gerrit_extra) == 0:
+	if not '' in gerrit_extra:
 		for m in gerrit_extra:
 			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "project: "').read() # Project
 			commit_details.append(((tmp.replace('project: ', '')).replace('\n','')).replace(' ',''))
