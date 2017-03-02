@@ -7,14 +7,14 @@ curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:ope
 target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common"]
 
 # Blacklisting
-commit_blacklist = [[''],[''],[''],[''],['']]
+commit_blacklist = [[''],[''],[''],['163951'],['']]
 word_blacklist = ['','','','','']
 id_black_per_rom = ['162848', '162848','163078','163078']
 rom_black_per_rom = ['DU', 'SLIM','DU', 'SLIM'] # Easier than tuplet
 
 # Extra commits
-github_extra = ['h2o64/proprietary_vendor_yu/commit/3bf4e59ba071be2f162f4de695bce91afbf51406','h2o64/proprietary_vendor_yu/commit/daeec80a8fb17b415996c802d8bfbfe68398b258','h2o64/proprietary_vendor_yu/commit/d4ffa9bb0c3c1b8fb652c200bb05c6fc011dfae1','h2o64/proprietary_vendor_yu/commit/199fe6aa083d149709c85bcf0071363603e7f9db','h2o64/proprietary_vendor_yu/commit/cec0116114f2f3eed4e743b409e9abba8caa7c8e']
-github_extra_branch = ['cm-14.1-ivy','cm-14.1-ivy','cm-14.1-ivy','cm-14.1-ivy','cm-14.1-ivy']
+github_extra = ['h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876','h2o64/proprietary_vendor_yu/commit/0dff53419ac9dd114f5e028c720d5ea931febd81','h2o64/proprietary_vendor_yu/commit/3b4fb2d2cf8b661a95b02244f33b27f4c2302601','h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c','h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70','h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884']
+github_extra_branch = ['cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1']
 gerrit_extra = ['']
 
 # Global variables
