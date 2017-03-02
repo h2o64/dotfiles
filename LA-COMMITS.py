@@ -13,8 +13,8 @@ id_black_per_rom = ['162848', '162848','163078','163078']
 rom_black_per_rom = ['DU', 'SLIM','DU', 'SLIM'] # Easier than tuplet
 
 # Extra commits
-github_extra = ['']
-github_extra_branch = ['']
+github_extra = ['h2o64/proprietary_vendor_yu/commit/3bf4e59ba071be2f162f4de695bce91afbf51406','h2o64/proprietary_vendor_yu/commit/daeec80a8fb17b415996c802d8bfbfe68398b258','h2o64/proprietary_vendor_yu/commit/d4ffa9bb0c3c1b8fb652c200bb05c6fc011dfae1','h2o64/proprietary_vendor_yu/commit/199fe6aa083d149709c85bcf0071363603e7f9db','h2o64/proprietary_vendor_yu/commit/cec0116114f2f3eed4e743b409e9abba8caa7c8e']
+github_extra_branch = ['cm-14.1-ivy','cm-14.1-ivy','cm-14.1-ivy','cm-14.1-ivy','cm-14.1-ivy']
 gerrit_extra = ['']
 
 # Global variables
