@@ -20,6 +20,7 @@ gerrit_extra = ['164165']
 # Global variables
 repos_count = len(target)
 commits_count = [0]*repos_count
+gerritReset = False
 
 # Taken from http://stackoverflow.com/questions/8777753/converting-datetime-date-to-utc-timestamp-in-python/8778548#8778548
 # and http://stackoverflow.com/questions/19068269/how-to-convert-a-string-date-into-datetime-format-in-python
@@ -175,6 +176,10 @@ def picks():
 		ret_numbers[k] = copy.deepcopy(numbers[k][::-1])
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
 		old_cd = cd_print(project[k].replace('LineageOS/android', '').replace('_','/'),old_cd)
+		if gerritReset:
+			print 'git remote remove gerrit'
+			print 'git remote add gerrit ssh://h2o64@review.lineageos.org:29418/' + project[k]
+			print 'git fetch gerrit cm-14.1\ngit reset --hard gerrit/cm-14.1'
 		for j in range(commits_count[k]):
 			if word_blacklist[k] not in ret_subject[k][j]:
 				blacklist_word_count[k] += - 1
@@ -192,6 +197,7 @@ def picks():
 			# Reset
 			word_blacklist_bool = True
 			banned_rom_ind = []
+		if gerritReset: print 'git push gerrit HEAD:refs/for/cm-14.1' # cm-14.1 hardcoded because idc
 	cherry = ''
 	suffix = ''
 	is_proprietary = False
