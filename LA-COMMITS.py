@@ -36,9 +36,10 @@ github_extra = ['h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daf
 'h2o64/android_kernel_cyanogen_msm8916/commit/a93d4b2a27b3cb2b06686dbc9fdc3b335711a603',
 'h2o64/android_kernel_cyanogen_msm8916/commit/021c1cd29d39b64739cd8e021ee6c11ef97c6ce0',
 'h2o64/android_kernel_cyanogen_msm8916/commit/d68136b2f681f728420ab35628f185c3d46274df',
-'h2o64/android_kernel_cyanogen_msm8916/commit/ee5e242a84082b2373c269477b72bcbb283b2ba9']
-github_extra_branch = ['cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1']
-gerrit_extra = ['164165','164810','165686','165680','166037','166036','166050']
+'h2o64/android_kernel_cyanogen_msm8916/commit/ee5e242a84082b2373c269477b72bcbb283b2ba9',
+'h2o64/android_kernel_cyanogen_msm8916/commit/eb6a54d0c04c79f6d3ec82c5eaeda00bc3e0f9b0']
+github_extra_branch = ['cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1']
+gerrit_extra = ['164165','166037','166036','166050']
 
 # Global variables
 repos_count = len(target)
@@ -215,7 +216,7 @@ def picks():
 					if not m == banned_rom_ind[len(banned_rom_ind)-1]: tmp += ' || '
 				if ret_numbers[k][j] in id_black_per_rom: print tmp + '; then'
 				tmp = 'if '
-				print git_fetch + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
+				print git_fetch + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] # + ' - ' + updated[k][j]
 				if ret_numbers[k][j] in id_black_per_rom: print 'fi'
 			# Reset
 			word_blacklist_bool = True
@@ -256,7 +257,7 @@ def picks():
 			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "lastUpdated: "').read() # Updated
 			commit_details.append((tmp.replace('lastUpdated: ', '')).replace('\n',''))
 			old_cd = cd_print(commit_details[0].replace('LineageOS/android', '').replace('_','/'),old_cd)
-			print git_fetch + commit_details[0] + ' refs/changes/' + m[-2] + m[-1] + '/' + m + '/' + commit_details[1] +' && git cherry-pick FETCH_HEAD #' + commit_details[2] + ' - ' + commit_details[3]
+			print git_fetch + commit_details[0] + ' refs/changes/' + m[-2] + m[-1] + '/' + m + '/' + commit_details[1] +' && git cherry-pick FETCH_HEAD #' + commit_details[2] # + ' - ' + commit_details[3]
 			commit_details = [] # Reset
 	for l in range(repos_count):
 		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]) - len(commit_blacklist[l]) + blacklist_word_count[l])
