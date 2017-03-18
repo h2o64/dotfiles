@@ -4,7 +4,14 @@ import os
 import copy
 
 curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+owner:"theh2o64@gmail.com"+project:LineageOS/'
-target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common","openandroid_device_xiaomi_msm8996-common","openandroid_device_xiaomi_gemini","openandroid_device_wingtech_wt88047"]
+target = ["android_kernel_cyanogen_msm8916",
+"android_device_yu_tomato",
+"android_device_yu_lettuce",
+"android_device_yu_jalebi",
+"android_device_cyanogen_msm8916-common",
+"openandroid_device_xiaomi_msm8996-common",
+"openandroid_device_xiaomi_gemini",
+"openandroid_device_wingtech_wt88047"]
 
 # Blacklisting
 commit_blacklist = [[''],[''],[''],['163950','163951','164088'],['165234'],[''],[''],['']]
@@ -13,9 +20,25 @@ id_black_per_rom = ['']
 rom_black_per_rom = [''] # Easier than tuplet
 
 # Extra commits
-github_extra = ['h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876','h2o64/proprietary_vendor_yu/commit/0dff53419ac9dd114f5e028c720d5ea931febd81','h2o64/proprietary_vendor_yu/commit/3b4fb2d2cf8b661a95b02244f33b27f4c2302601','h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c','h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70','h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884']
-github_extra_branch = ['cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1']
-gerrit_extra = ['164165','164810','165686','165680','166037','166036']
+github_extra = ['h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876',
+'h2o64/proprietary_vendor_yu/commit/0dff53419ac9dd114f5e028c720d5ea931febd81',
+'h2o64/proprietary_vendor_yu/commit/3b4fb2d2cf8b661a95b02244f33b27f4c2302601',
+'h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c',
+'h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70',
+'h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e',
+'h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884',
+'h2o64/android_kernel_cyanogen_msm8916/commit/37a3e415e4ac603a58794c2aeeedb656ab02cecb',
+'h2o64/android_kernel_cyanogen_msm8916/commit/57e91316d3b1836fcd3497564f49a73e2fcdb14b',
+'h2o64/android_kernel_cyanogen_msm8916/commit/1f2d307a3a4d246935faff865f690aae87938f2c',
+'h2o64/android_kernel_cyanogen_msm8916/commit/0de26a136a35c5512a5e760fefcbe50b1f3a56a1',
+'h2o64/android_kernel_cyanogen_msm8916/commit/e3e65128fee2c21a854dcb05e5090376fb234a49',
+'h2o64/android_kernel_cyanogen_msm8916/commit/277e9fa175201eb7fa5a00e70573faa6b4b75f9a',
+'h2o64/android_kernel_cyanogen_msm8916/commit/a93d4b2a27b3cb2b06686dbc9fdc3b335711a603',
+'h2o64/android_kernel_cyanogen_msm8916/commit/021c1cd29d39b64739cd8e021ee6c11ef97c6ce0',
+'h2o64/android_kernel_cyanogen_msm8916/commit/d68136b2f681f728420ab35628f185c3d46274df',
+'h2o64/android_kernel_cyanogen_msm8916/commit/ee5e242a84082b2373c269477b72bcbb283b2ba9']
+github_extra_branch = ['cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1']
+gerrit_extra = ['164165','164810','165686','165680','166037','166036','166050']
 
 # Global variables
 repos_count = len(target)
@@ -204,10 +227,10 @@ def picks():
 	if not '' in github_extra:
 		for ind in range(len(github_extra)):
 			commit = github_extra[ind]
-			if 'proprietary_vendor' in commit: is_proprietary = True
 			for i in range(len(commit)):
 				suffix = copy.deepcopy(commit[i:])
-				if suffix.startswith('android_') or suffix.startswith('proprietary_vendor_'):
+				if suffix.startswith('proprietary_vendor_'): is_proprietary = True
+				if suffix.startswith('android_') or is_proprietary:
 					suffix = copy.deepcopy(suffix[:len(suffix)-8-40])
 					if is_proprietary:
 						cd = ('/' + suffix.replace('proprietary_','')).replace('_','/')
@@ -220,6 +243,7 @@ def picks():
 					cherry = ''
 					suffix = ''
 					break
+			is_proprietary = False
 	commit_details = []
 	if not '' in gerrit_extra:
 		for m in gerrit_extra:
