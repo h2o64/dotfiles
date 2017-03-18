@@ -173,7 +173,7 @@ def time_swap(old, new, time_ref, new_time_bis, old_time):
 def cd_print(cd_to_print,old):
 	if not old == cd_to_print:
 		old = cd_to_print
-		print 'if [ -d $CURRENT_DIR' + cd_to_print + ' ]; then cd $CURRENT_DIR' + cd_to_print + '; fi'
+		print 'cd $CURRENT_DIR' + cd_to_print
 	return old
 
 # Cherry picks
@@ -224,8 +224,6 @@ def picks():
 		if gerritReset: print 'git push gerrit HEAD:refs/for/cm-14.1' # cm-14.1 hardcoded because idc
 	cherry = ''
 	suffix = ''
-	old_fetch = ''
-	new_fetch = ''
 	is_proprietary = False
 	if not '' in github_extra:
 		for ind in range(len(github_extra)):
@@ -239,11 +237,8 @@ def picks():
 						cd = ('/' + suffix.replace('proprietary_','')).replace('_','/')
 					else:
 						cd = ('/' + suffix.replace('android_','')).replace('_','/')
+					cd =  cd + '\n' + 'git fetch https://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
 					old_cd = cd_print(cd,old_cd)
-					new_fetch = 'git fetch https://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
-					if not new_fetch == old_fetch:
-						print new_fetch
-						old_fetch = new_fetch
 					print 'git cherry-pick ' + commit[-40:]
 					# Reset
 					cherry = ''
