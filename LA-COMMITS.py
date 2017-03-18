@@ -4,11 +4,11 @@ import os
 import copy
 
 curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+owner:"theh2o64@gmail.com"+project:LineageOS/'
-target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common"]
+target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common","openandroid_device_xiaomi_msm8996-common","openandroid_device_xiaomi_gemini","openandroid_device_wingtech_wt88047"]
 
 # Blacklisting
-commit_blacklist = [[''],[''],[''],['163950','163951','164088'],['']]
-word_blacklist = ['','','','','']
+commit_blacklist = [[''],[''],[''],['163950','163951','164088'],[''],[''],[''],['']]
+word_blacklist = ['','','','','','','','']
 id_black_per_rom = ['']
 rom_black_per_rom = [''] # Easier than tuplet
 
@@ -66,13 +66,21 @@ def gather(remotes):
 	topic_out = []
 	updated_out = []
 	count = 0
+	new_curl = ''
+	remo = ''
 	# Gather raw data
 	for i in remotes:
-		project_out.append('LineageOS/' + i)
-		numbers_out.append(os.popen(curl + i + '| sed 1d | jq --raw-output ".[] | ._number"').read())
-		topic_out.append(os.popen(curl + i + '| sed 1d | jq --raw-output ".[] | .topic"').read())
-		subject_out.append(os.popen(curl + i + '| sed 1d | jq --raw-output ".[] | .subject"').read())
-		updated_out.append(os.popen(curl + i + '| sed 1d | jq --raw-output ".[] | .updated"').read())
+		if i.startswith('open'):
+			remo = i[4:]
+			new_curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+project:LineageOS/'
+		else:
+			remo = i
+			new_curl = curl
+		project_out.append('LineageOS/' + remo)
+		numbers_out.append(os.popen(new_curl + remo + '| sed 1d | jq --raw-output ".[] | ._number"').read())
+		topic_out.append(os.popen(new_curl + remo + '| sed 1d | jq --raw-output ".[] | .topic"').read())
+		subject_out.append(os.popen(new_curl + remo + '| sed 1d | jq --raw-output ".[] | .subject"').read())
+		updated_out.append(os.popen(new_curl + remo + '| sed 1d | jq --raw-output ".[] | .updated"').read())
 		count += 1
 	return (project_out,topic_out,numbers_out,subject_out,updated_out)
 
