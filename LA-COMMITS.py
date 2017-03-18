@@ -7,15 +7,15 @@ curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:ope
 target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common"]
 
 # Blacklisting
-commit_blacklist = [[''],[''],[''],['163951'],['']]
+commit_blacklist = [[''],[''],[''],['163950','163951','164088'],['']]
 word_blacklist = ['','','','','']
-id_black_per_rom = ['162848', '162848','163078','163078']
-rom_black_per_rom = ['DU', 'SLIM','DU', 'SLIM'] # Easier than tuplet
+id_black_per_rom = ['']
+rom_black_per_rom = [''] # Easier than tuplet
 
 # Extra commits
 github_extra = ['h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876','h2o64/proprietary_vendor_yu/commit/0dff53419ac9dd114f5e028c720d5ea931febd81','h2o64/proprietary_vendor_yu/commit/3b4fb2d2cf8b661a95b02244f33b27f4c2302601','h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c','h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70','h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884']
 github_extra_branch = ['cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1']
-gerrit_extra = ['']
+gerrit_extra = ['164165']
 
 # Global variables
 repos_count = len(target)
@@ -136,6 +136,13 @@ def time_swap(old, new, time_ref, new_time_bis, old_time):
 			# print 'old time = ' + str(old_time[k][j]) + ' | new time = ' + str(new_time_bis[k][j])
 			new = old[time_ref[k][j][1]][time_ref[k][j][2]]
 
+# Print 'cd' a smart way
+def cd_print(cd_to_print,old):
+	if not old == cd_to_print:
+		old = cd_to_print
+		print 'cd $CURRENT_DIR' + cd_to_print
+	return old
+
 # Cherry picks
 def picks():
 	project_global,topic_global,numbers_global,subject_global,updated_global = gather(target)
@@ -150,6 +157,7 @@ def picks():
 	tmp = 'if '
 	blacklist_word_count = [0]*repos_count
 	word_blacklist_bool = True
+	old_cd = ''
 	print 'CURRENT_DIR=$1'
 	print 'CURRENT_DIR_NAME=$(basename $CURRENT_DIR)'
 	for k in range(repos_count):
@@ -158,7 +166,7 @@ def picks():
 		ret_topic[k] = copy.deepcopy(topic[k][::-1])
 		ret_numbers[k] = copy.deepcopy(numbers[k][::-1])
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
-		print 'cd $CURRENT_DIR' + project[k].replace('LineageOS/android', '').replace('_','/')
+		old_cd = cd_print(project[k].replace('LineageOS/android', '').replace('_','/'),old_cd)
 		for j in range(commits_count[k]):
 			if word_blacklist[k] not in ret_subject[k][j]:
 				blacklist_word_count[k] += - 1
@@ -170,13 +178,12 @@ def picks():
 					tmp += '[ ! $CURRENT_DIR_NAME == "' + rom_black_per_rom[m] + '" ]'
 					if not m == banned_rom_ind[len(banned_rom_ind)-1]: tmp += ' || '
 				if ret_numbers[k][j] in id_black_per_rom: print tmp + '; then'
-				tmp = 'if [ '
+				tmp = 'if '
 				print git_fetch + project[k] + ' refs/changes/' + ret_numbers[k][j][-2] + ret_numbers[k][j][-1] + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] + ' - ' + updated[k][j]
 				if ret_numbers[k][j] in id_black_per_rom: print 'fi'
 			# Reset
 			word_blacklist_bool = True
 			banned_rom_ind = []
-		print 'cd $CURRENT_DIR'
 	cherry = ''
 	suffix = ''
 	is_proprietary = False
@@ -188,11 +195,13 @@ def picks():
 				suffix = copy.deepcopy(commit[i:])
 				if suffix.startswith('android_') or suffix.startswith('proprietary_vendor_'):
 					suffix = copy.deepcopy(suffix[:len(suffix)-8-40])
-					if is_proprietary: print 'cd ' + (suffix.replace('proprietary_','')).replace('_','/')
-					else:  print 'cd ' + (suffix.replace('android_','')).replace('_','/')
-					print 'git fetch https://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
+					if is_proprietary:
+						cd = ('/' + suffix.replace('proprietary_','')).replace('_','/')
+					else:
+						cd = ('/' + suffix.replace('android_','')).replace('_','/')
+					cd =  cd + '\n' + 'git fetch https://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
+					old_cd = cd_print(cd,old_cd)
 					print 'git cherry-pick ' + commit[-40:]
-					print 'cd $CURRENT_DIR'
 					# Reset
 					cherry = ''
 					suffix = ''
@@ -208,13 +217,13 @@ def picks():
 			commit_details.append((tmp.replace('commitMessage: ', '')).replace('\n',''))
 			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "lastUpdated: "').read() # Updated
 			commit_details.append((tmp.replace('lastUpdated: ', '')).replace('\n',''))
-			print 'cd $CURRENT_DIR' + commit_details[0].replace('LineageOS/android', '').replace('_','/')
+			old_cd = cd_print(commit_details[0].replace('LineageOS/android', '').replace('_','/'),old_cd)
 			print git_fetch + commit_details[0] + ' refs/changes/' + m[-2] + m[-1] + '/' + m + '/' + commit_details[1] +' && git cherry-pick FETCH_HEAD #' + commit_details[2] + ' - ' + commit_details[3]
-			print 'cd $CURRENT_DIR'
 			commit_details = [] # Reset
 	for l in range(repos_count):
 		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]) - len(commit_blacklist[l]) + blacklist_word_count[l])
 	print '# Number of extra commits  = ' + str(len(github_extra) + len(gerrit_extra))
+	print 'cd $CURRENT_DIR'
 
 if __name__ == '__main__':
     picks()
