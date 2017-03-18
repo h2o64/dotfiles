@@ -7,7 +7,7 @@ curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:ope
 target = ["android_kernel_cyanogen_msm8916","android_device_yu_tomato","android_device_yu_lettuce","android_device_yu_jalebi","android_device_cyanogen_msm8916-common","openandroid_device_xiaomi_msm8996-common","openandroid_device_xiaomi_gemini","openandroid_device_wingtech_wt88047"]
 
 # Blacklisting
-commit_blacklist = [[''],[''],[''],['163950','163951','164088'],[''],[''],[''],['']]
+commit_blacklist = [[''],[''],[''],['163950','163951','164088'],['165234'],[''],[''],['']]
 word_blacklist = ['','','','','','','','']
 id_black_per_rom = ['']
 rom_black_per_rom = [''] # Easier than tuplet
