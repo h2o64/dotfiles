@@ -12,6 +12,7 @@ target = ["android_kernel_cyanogen_msm8916",
 "openandroid_device_xiaomi_msm8996-common",
 "openandroid_device_xiaomi_gemini",
 "openandroid_device_wingtech_wt88047"]
+la_only_target = [5,6,7]
 
 # Blacklisting
 commit_blacklist = [[''],[''],[''],['163950','163951','164088'],['165234'],[''],[''],['']]
@@ -176,6 +177,16 @@ def cd_print(cd_to_print,old):
 		print 'cd $CURRENT_DIR' + cd_to_print
 	return old
 
+# LA-Only ?
+def isLA_ONLY(project_name):
+	# print '# LA CHECK #'
+	# print 'project_name = ' + project_name
+	for i in la_only_target:
+		# print 'target = ' + target[i]
+		if target[i].startswith('open') and (target[i][4:] in project_name): return True
+		elif target[i] in project_name: return True
+	return False
+
 # Cherry picks
 def picks():
 	project_global,topic_global,numbers_global,subject_global,updated_global = gather(target)
@@ -199,6 +210,7 @@ def picks():
 		ret_topic[k] = copy.deepcopy(topic[k][::-1])
 		ret_numbers[k] = copy.deepcopy(numbers[k][::-1])
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
+		if isLA_ONLY(project[k]): print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
 		old_cd = cd_print(project[k].replace('LineageOS/android', '').replace('_','/'),old_cd)
 		if gerritReset:
 			print 'git remote remove gerrit'
@@ -222,9 +234,11 @@ def picks():
 			word_blacklist_bool = True
 			banned_rom_ind = []
 		if gerritReset: print 'git push gerrit HEAD:refs/for/cm-14.1' # cm-14.1 hardcoded because idc
+		if isLA_ONLY(project[k]): print 'fi'
 	cherry = ''
 	suffix = ''
 	is_proprietary = False
+	first_LA = 1
 	if not '' in github_extra:
 		for ind in range(len(github_extra)):
 			commit = github_extra[ind]
@@ -233,6 +247,12 @@ def picks():
 				if suffix.startswith('proprietary_vendor_'): is_proprietary = True
 				if suffix.startswith('android_') or is_proprietary:
 					suffix = copy.deepcopy(suffix[:len(suffix)-8-40])
+					if isLA_ONLY(suffix) and first_LA == 1:
+						print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
+						first_LA = 2
+					elif not isLA_ONLY(suffix) and first_LA == 2:
+						print 'fi'
+						first_LA = 1
 					if is_proprietary:
 						cd = ('/' + suffix.replace('proprietary_','')).replace('_','/')
 					else:
@@ -246,6 +266,7 @@ def picks():
 					break
 			is_proprietary = False
 	commit_details = []
+	first_LA = 1
 	if not '' in gerrit_extra:
 		for m in gerrit_extra:
 			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "project: "').read() # Project
@@ -257,6 +278,12 @@ def picks():
 			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "lastUpdated: "').read() # Updated
 			commit_details.append((tmp.replace('lastUpdated: ', '')).replace('\n',''))
 			old_cd = cd_print(commit_details[0].replace('LineageOS/android', '').replace('_','/'),old_cd)
+			if isLA_ONLY(commit_details[0]) and first_LA == 1:
+				print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
+				first_LA = 2
+			elif not isLA_ONLY(commit_details[0]) and first_LA == 2:
+				print 'fi'
+				first_LA = 1
 			print git_fetch + commit_details[0] + ' refs/changes/' + m[-2] + m[-1] + '/' + m + '/' + commit_details[1] +' && git cherry-pick FETCH_HEAD #' + commit_details[2] # + ' - ' + commit_details[3]
 			commit_details = [] # Reset
 	for l in range(repos_count):
