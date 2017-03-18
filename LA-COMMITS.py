@@ -179,13 +179,20 @@ def cd_print(cd_to_print,old):
 
 # LA-Only ?
 def isLA_ONLY(project_name):
+	count = 0
 	# print '# LA CHECK #'
 	# print 'project_name = ' + project_name
 	for i in la_only_target:
 		# print 'target = ' + target[i]
 		if target[i].startswith('open') and (target[i][4:] in project_name): return True
 		elif target[i] in project_name: return True
-	return False
+	tmp = project_name.replace('LineageOS/','')
+	# print "Second method"
+	# print "tmp = " + tmp
+	for j in target:
+		# print "j = " + j
+		if tmp in j: return False
+	return True
 
 # Cherry picks
 def picks():
@@ -247,6 +254,11 @@ def picks():
 				if suffix.startswith('proprietary_vendor_'): is_proprietary = True
 				if suffix.startswith('android_') or is_proprietary:
 					suffix = copy.deepcopy(suffix[:len(suffix)-8-40])
+					# print "# INFO #"
+					# print "isLA_ONLY(suffix) = " + str(isLA_ONLY(suffix))
+					# print "first_LA = " + str(first_LA)
+					# print "ind = " + str(ind)
+					# print "len(github_extra) = " + str(len(github_extra))
 					if isLA_ONLY(suffix) and first_LA == 1:
 						print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
 						first_LA = 2
@@ -260,6 +272,7 @@ def picks():
 					cd =  cd + '\n' + 'git fetch https://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
 					old_cd = cd_print(cd,old_cd)
 					print 'git cherry-pick ' + commit[-40:]
+					if isLA_ONLY(suffix) and ind == len(github_extra)-1: print 'fi'
 					# Reset
 					cherry = ''
 					suffix = ''
@@ -277,14 +290,21 @@ def picks():
 			commit_details.append((tmp.replace('commitMessage: ', '')).replace('\n',''))
 			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "lastUpdated: "').read() # Updated
 			commit_details.append((tmp.replace('lastUpdated: ', '')).replace('\n',''))
-			old_cd = cd_print(commit_details[0].replace('LineageOS/android', '').replace('_','/'),old_cd)
+			# print "# INFO #"
+			# print "isLA_ONLY(commit_details[0]) = " + str(isLA_ONLY(commit_details[0]))
+			# print "first_LA = " + str(first_LA)
+			# print "m = " + m
+			# print "gerrit_extra[-1] = " + gerrit_extra[-1]
 			if isLA_ONLY(commit_details[0]) and first_LA == 1:
 				print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
 				first_LA = 2
 			elif not isLA_ONLY(commit_details[0]) and first_LA == 2:
+				print "Enter second condition"
 				print 'fi'
 				first_LA = 1
+			old_cd = cd_print(commit_details[0].replace('LineageOS/android', '').replace('_','/'),old_cd)
 			print git_fetch + commit_details[0] + ' refs/changes/' + m[-2] + m[-1] + '/' + m + '/' + commit_details[1] +' && git cherry-pick FETCH_HEAD #' + commit_details[2] # + ' - ' + commit_details[3]
+			if isLA_ONLY(commit_details[0]) and m == gerrit_extra[-1]: print 'fi'
 			commit_details = [] # Reset
 	for l in range(repos_count):
 		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]) - len(commit_blacklist[l]) + blacklist_word_count[l])
