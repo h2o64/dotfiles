@@ -3,44 +3,77 @@ import datetime
 import os
 import copy
 
-curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+owner:"theh2o64@gmail.com"+project:LineageOS/'
-target = ["android_kernel_cyanogen_msm8916",
-"android_device_yu_tomato",
-"android_device_yu_lettuce",
-"android_device_yu_jalebi",
+curl = 'curl -s --request GET https://gerrit.aosparadox.org/changes/?q=status:open+project:yu-community-os/'
+target = ["android",
+"android_art",
+"android_bionic",
+"android_build",
+"android_build_kati",
 "android_device_cyanogen_msm8916-common",
-"openandroid_device_xiaomi_msm8996-common",
-"openandroid_device_xiaomi_gemini",
-"openandroid_device_wingtech_wt88047"]
-la_only_target = [5,6,7]
+"android_device_qcom_common",
+"android_device_qcom_sepolicy",
+"android_device_yu_jalebi",
+"android_device_yu_lettuce",
+"android_device_yu_tomato",
+"android_external_e2fsprogs",
+"android_external_f2fs-tools",
+"android_external_fsck_msdos",
+"android_external_jemalloc",
+"android_external_libjpeg-turbo",
+"android_external_libnfc-nci",
+"android_external_libpng",
+"android_external_skia",
+"android_external_sqlite",
+"android_external_tinyalsa",
+"android_external_tinycompress",
+"android_external_wpa_supplicant_8",
+"android_external_zlib",
+"android_frameworks_av",
+"android_frameworks_base",
+"android_frameworks_native",
+"android_frameworks_opt_net_wifi",
+"android_frameworks_opt_telephony",
+"android_frameworks_rs",
+"android_gcc_linux-x86_aarch64_aarch64-linux-android-4.9",
+"android_gcc_linux-x86_arm-linux-android-4.9",
+"android_hardware_libhardware",
+"android_hardware_qcom_bt",
+"android_hardware_qcom_wlan",
+"android_hardware_ril",
+"android_kernel_yu_msm8916",
+"android_packages_apps_Dialer",
+"android_packages_apps_FMRadio",
+"android_packages_apps_PackageInstaller",
+"android_packages_apps_PhoneCommon",
+"android_packages_apps_Settings",
+"android_packages_apps_SnapdragonCamera",
+"android_packages_apps_SnapdragonGallery",
+"android_packages_inputmethods_LatinIME",
+"android_packages_providers_MediaProvider",
+"android_packages_services_Telecomm",
+"android_packages_services_Telephony",
+"android_system_bt",
+"android_system_core",
+"android_system_extras",
+"android_system_media",
+"android_system_sepolicy",
+"android_system_vold",
+"android_vendor_qcom_opensource_bluetooth"
+"android_vendor_qcom_opensource_fm",
+"android_vendor_volte",
+"proprietary_vendor_yu"]
+la_only_target = []
 
 # Blacklisting
-commit_blacklist = [[''],[''],[''],['163950','163951','164088'],['165234'],[''],[''],['']]
-word_blacklist = ['','','','','','','','']
+commit_blacklist = [[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],['']]
+word_blacklist = ['','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','']
 id_black_per_rom = ['']
-rom_black_per_rom = [''] # Easier than tuplet
+rom_black_per_rom = ['']
 
 # Extra commits
-github_extra = ['h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876',
-'h2o64/proprietary_vendor_yu/commit/0dff53419ac9dd114f5e028c720d5ea931febd81',
-'h2o64/proprietary_vendor_yu/commit/3b4fb2d2cf8b661a95b02244f33b27f4c2302601',
-'h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c',
-'h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70',
-'h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e',
-'h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884',
-'h2o64/android_kernel_cyanogen_msm8916/commit/37a3e415e4ac603a58794c2aeeedb656ab02cecb',
-'h2o64/android_kernel_cyanogen_msm8916/commit/57e91316d3b1836fcd3497564f49a73e2fcdb14b',
-'h2o64/android_kernel_cyanogen_msm8916/commit/1f2d307a3a4d246935faff865f690aae87938f2c',
-'h2o64/android_kernel_cyanogen_msm8916/commit/0de26a136a35c5512a5e760fefcbe50b1f3a56a1',
-'h2o64/android_kernel_cyanogen_msm8916/commit/e3e65128fee2c21a854dcb05e5090376fb234a49',
-'h2o64/android_kernel_cyanogen_msm8916/commit/277e9fa175201eb7fa5a00e70573faa6b4b75f9a',
-'h2o64/android_kernel_cyanogen_msm8916/commit/a93d4b2a27b3cb2b06686dbc9fdc3b335711a603',
-'h2o64/android_kernel_cyanogen_msm8916/commit/021c1cd29d39b64739cd8e021ee6c11ef97c6ce0',
-'h2o64/android_kernel_cyanogen_msm8916/commit/d68136b2f681f728420ab35628f185c3d46274df',
-'h2o64/android_kernel_cyanogen_msm8916/commit/ee5e242a84082b2373c269477b72bcbb283b2ba9',
-'h2o64/android_kernel_cyanogen_msm8916/commit/eb6a54d0c04c79f6d3ec82c5eaeda00bc3e0f9b0']
-github_extra_branch = ['cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1','cm-14.1']
-gerrit_extra = ['164165','166050','166637'] # YU and wt88047
+github_extra = ['']
+github_extra_branch = ['']
+gerrit_extra = ['']
 
 # Global variables
 repos_count = len(target)
@@ -70,7 +103,7 @@ def quicksort(t):
 	return quicksort(t1)+[pivot]+quicksort(t2)
 
 def get_patchset(commit_id):
-	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + commit_id + ' --current-patch-set | grep "number: " | grep -v "' + commit_id + '"').read()
+	tmp = os.popen('ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query change:' + commit_id + ' --current-patch-set | grep "number: " | grep -v "' + commit_id + '"').read()
 	return ((tmp.replace('number: ', '')).replace('\n','')).replace(' ','')
 
 def filter(liste):
@@ -98,11 +131,11 @@ def gather(remotes):
 	for i in remotes:
 		if i.startswith('open'):
 			remo = i[4:]
-			new_curl = 'curl -s --request GET https://review.lineageos.org/changes/?q=status:open+project:LineageOS/'
+			new_curl = 'curl -s --request GET https://gerrit.aosparadox.org/changes/?q=status:open+project:yu-community-os/'
 		else:
 			remo = i
 			new_curl = curl
-		project_out.append('LineageOS/' + remo)
+		project_out.append('yu-community-os/' + remo)
 		numbers_out.append(os.popen(new_curl + remo + '| sed 1d | jq --raw-output ".[] | ._number"').read())
 		topic_out.append(os.popen(new_curl + remo + '| sed 1d | jq --raw-output ".[] | .topic"').read())
 		subject_out.append(os.popen(new_curl + remo + '| sed 1d | jq --raw-output ".[] | .subject"').read())
@@ -186,7 +219,7 @@ def isLA_ONLY(project_name):
 		# print 'target = ' + target[i]
 		if target[i].startswith('open') and (target[i][4:] in project_name): return True
 		elif target[i] in project_name: return True
-	tmp = project_name.replace('LineageOS/','')
+	tmp = project_name.replace('yu-community-os/','')
 	# print "Second method"
 	# print "tmp = " + tmp
 	for j in target:
@@ -203,7 +236,7 @@ def picks():
 	ret_topic = [0]*repos_count
 	ret_numbers = [0]*repos_count
 	ret_subject = [0]*repos_count
-	git_fetch = 'git fetch ssh://h2o64@review.lineageos.org:29418/'
+	git_fetch = 'git fetch ssh://h2o64@gerrit.aosparadox.org:29418/'
 	banned_rom_ind = []
 	tmp = 'if '
 	blacklist_word_count = [0]*repos_count
@@ -218,11 +251,11 @@ def picks():
 		ret_numbers[k] = copy.deepcopy(numbers[k][::-1])
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
 		if isLA_ONLY(project[k]): print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
-		old_cd = cd_print(project[k].replace('LineageOS/android', '').replace('_','/'),old_cd)
+		old_cd = cd_print(project[k].replace('yu-community-os/android', '').replace('_','/'),old_cd)
 		if gerritReset:
 			print 'git remote remove gerrit'
-			print 'git remote add gerrit ssh://h2o64@review.lineageos.org:29418/' + project[k]
-			print 'git fetch gerrit cm-14.1\ngit reset --hard gerrit/cm-14.1'
+			print 'git remote add gerrit ssh://h2o64@gerrit.aosparadox.org:29418/' + project[k]
+			print 'git fetch gerrit cyos-7.1\ngit reset --hard gerrit/cyos-7.1'
 		for j in range(commits_count[k]):
 			if word_blacklist[k] not in ret_subject[k][j]:
 				blacklist_word_count[k] += - 1
@@ -240,7 +273,7 @@ def picks():
 			# Reset
 			word_blacklist_bool = True
 			banned_rom_ind = []
-		if gerritReset: print 'git push gerrit HEAD:refs/for/cm-14.1' # cm-14.1 hardcoded because idc
+		if gerritReset: print 'git push gerrit HEAD:refs/for/cyos-7.1' # cyos-7.1 hardcoded because idc
 		if isLA_ONLY(project[k]): print 'fi'
 	cherry = ''
 	suffix = ''
@@ -282,13 +315,13 @@ def picks():
 	first_LA = 1
 	if not '' in gerrit_extra:
 		for m in gerrit_extra:
-			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "project: "').read() # Project
+			tmp = os.popen('ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query change:' + m + ' | grep "project: "').read() # Project
 			commit_details.append(((tmp.replace('project: ', '')).replace('\n','')).replace(' ',''))
-			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' --current-patch-set | grep "number: " | grep -v "' + m + '"').read() # Patchset
+			tmp = os.popen('ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query change:' + m + ' --current-patch-set | grep "number: " | grep -v "' + m + '"').read() # Patchset
 			commit_details.append(((tmp.replace('number: ', '')).replace('\n','')).replace(' ',''))
-			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "commitMessage: "').read() # Subject
+			tmp = os.popen('ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query change:' + m + ' | grep "commitMessage: "').read() # Subject
 			commit_details.append((tmp.replace('commitMessage: ', '')).replace('\n',''))
-			tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query change:' + m + ' | grep "lastUpdated: "').read() # Updated
+			tmp = os.popen('ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query change:' + m + ' | grep "lastUpdated: "').read() # Updated
 			commit_details.append((tmp.replace('lastUpdated: ', '')).replace('\n',''))
 			# print "# INFO #"
 			# print "isLA_ONLY(commit_details[0]) = " + str(isLA_ONLY(commit_details[0]))
@@ -302,7 +335,7 @@ def picks():
 				print "Enter second condition"
 				print 'fi'
 				first_LA = 1
-			old_cd = cd_print(commit_details[0].replace('LineageOS/android', '').replace('_','/'),old_cd)
+			old_cd = cd_print(commit_details[0].replace('yu-community-os/android', '').replace('_','/'),old_cd)
 			print git_fetch + commit_details[0] + ' refs/changes/' + m[-2] + m[-1] + '/' + m + '/' + commit_details[1] +' && git cherry-pick FETCH_HEAD #' + commit_details[2] # + ' - ' + commit_details[3]
 			if isLA_ONLY(commit_details[0]) and m == gerrit_extra[-1]: print 'fi'
 			commit_details = [] # Reset
