@@ -268,9 +268,9 @@ def picks():
 					if not m == banned_rom_ind[len(banned_rom_ind)-1]: tmp += ' || '
 				if ret_numbers[k][j] in id_black_per_rom: print tmp + '; then'
 				tmp = 'if '
-				if len(ret_numbers[k][j]) == 1
+				if len(ret_numbers[k][j]) == 1:
 					num_fetch = ret_numbers[k][j][-1]
-				else
+				else:
 					num_fetch = ret_numbers[k][j][-2] + ret_numbers[k][j][-1]
 				print git_fetch + project[k] + ' refs/changes/' + num_fetch + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] # + ' - ' + updated[k][j]
 				if ret_numbers[k][j] in id_black_per_rom: print 'fi'
