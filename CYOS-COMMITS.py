@@ -58,7 +58,7 @@ target = ["android",
 "android_system_media",
 "android_system_sepolicy",
 "android_system_vold",
-"android_vendor_qcom_opensource_bluetooth"
+"android_vendor_qcom_opensource_bluetooth",
 "android_vendor_qcom_opensource_fm",
 "android_vendor_volte",
 "proprietary_vendor_yu"]
@@ -269,7 +269,7 @@ def picks():
 				if ret_numbers[k][j] in id_black_per_rom: print tmp + '; then'
 				tmp = 'if '
 				if len(ret_numbers[k][j]) == 1:
-					num_fetch = ret_numbers[k][j][-1]
+					num_fetch = '0' + ret_numbers[k][j]
 				else:
 					num_fetch = ret_numbers[k][j][-2] + ret_numbers[k][j][-1]
 				print git_fetch + project[k] + ' refs/changes/' + num_fetch + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] # + ' - ' + updated[k][j]
