@@ -65,8 +65,7 @@ target = ["android",
 la_only_target = []
 
 # Blacklisting
-commit_blacklist = [[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],[''],['']]
-word_blacklist = ['','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','']
+commit_blacklist = ['']
 id_black_per_rom = ['']
 rom_black_per_rom = ['']
 
@@ -240,7 +239,6 @@ def picks():
 	banned_rom_ind = []
 	tmp = 'if '
 	blacklist_word_count = [0]*repos_count
-	word_blacklist_bool = True
 	old_cd = ''
 	print 'CURRENT_DIR=$1'
 	print 'CURRENT_DIR_NAME=$(basename $CURRENT_DIR)'
@@ -257,10 +255,7 @@ def picks():
 			print 'git remote add gerrit ssh://h2o64@gerrit.aosparadox.org:29418/' + project[k]
 			print 'git fetch gerrit cyos-7.1\ngit reset --hard gerrit/cyos-7.1'
 		for j in range(commits_count[k]):
-			if word_blacklist[k] not in ret_subject[k][j]:
-				blacklist_word_count[k] += - 1
-				word_blacklist_bool = False
-			if ret_numbers[k][j] not in commit_blacklist[k]: # or word_blacklist_bool:
+			if ret_numbers[k][j] not in commit_blacklist:
 				for i in range(len(id_black_per_rom)):
 					if ret_numbers[k][j] == id_black_per_rom[i]: banned_rom_ind.append(i)
 				for m in banned_rom_ind:
@@ -275,7 +270,6 @@ def picks():
 				print git_fetch + project[k] + ' refs/changes/' + num_fetch + '/' + ret_numbers[k][j] + '/' + get_patchset(ret_numbers[k][j]) +' && git cherry-pick FETCH_HEAD # ' + ret_subject[k][j] # + ' - ' + updated[k][j]
 				if ret_numbers[k][j] in id_black_per_rom: print 'fi'
 			# Reset
-			word_blacklist_bool = True
 			banned_rom_ind = []
 		if gerritReset: print 'git push gerrit HEAD:refs/for/cyos-7.1' # cyos-7.1 hardcoded because idc
 		if isLA_ONLY(project[k]): print 'fi'
@@ -344,7 +338,7 @@ def picks():
 			if isLA_ONLY(commit_details[0]) and m == gerrit_extra[-1]: print 'fi'
 			commit_details = [] # Reset
 	for l in range(repos_count):
-		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]) - len(commit_blacklist[l]) + blacklist_word_count[l])
+		print '# Number of commits for ' + project[l] + ' = ' + str(len(ret_numbers[l]))
 	print '# Number of extra commits  = ' + str(len(github_extra) + len(gerrit_extra))
 	print 'cd $CURRENT_DIR'
 
