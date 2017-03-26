@@ -3,7 +3,7 @@ import datetime
 import os
 import copy
 
-curl = 'curl -s --request GET https://gerrit.aosparadox.org/changes/?q=status:open+project:yu-community-os/'
+curl = 'curl -s --request GET http://gerrit.aosparadox.org/changes/?q=status:open+project:yu-community-os/'
 target = ["android",
 "android_art",
 "android_bionic",
@@ -131,7 +131,7 @@ def gather(remotes):
 	for i in remotes:
 		if i.startswith('open'):
 			remo = i[4:]
-			new_curl = 'curl -s --request GET https://gerrit.aosparadox.org/changes/?q=status:open+project:yu-community-os/'
+			new_curl = 'curl -s --request GET http://gerrit.aosparadox.org/changes/?q=status:open+project:yu-community-os/'
 		else:
 			remo = i
 			new_curl = curl
@@ -302,7 +302,7 @@ def picks():
 						cd = ('/' + suffix.replace('proprietary_','')).replace('_','/')
 					else:
 						cd = ('/' + suffix.replace('android_','')).replace('_','/')
-					cd =  cd + '\n' + 'git fetch https://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
+					cd =  cd + '\n' + 'git fetch http://github.com/' + commit[:-40-8] +  ' ' + github_extra_branch[ind]
 					old_cd = cd_print(cd,old_cd)
 					print 'git cherry-pick ' + commit[-40:]
 					if isLA_ONLY(suffix) and ind == len(github_extra)-1: print 'fi'
