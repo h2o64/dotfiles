@@ -249,7 +249,12 @@ def picks():
 		ret_numbers[k] = copy.deepcopy(numbers[k][::-1])
 		ret_subject[k] = copy.deepcopy(subject[k][::-1])
 		if isLA_ONLY(project[k]): print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
-		old_cd = cd_print(project[k].replace('yu-community-os/android', '').replace('_','/'),old_cd)
+		if project[k] == 'android_external_wpa_supplicant_8':
+			project_name = "external/wpa_supplicant_8"
+		else if project[k] == 'android_external_fsck_msdos':
+			project_name = "external/fsck_msdos"
+		else: project_name = project[k].replace('yu-community-os/android', '').replace('_','/')
+		old_cd = cd_print(project_name,old_cd)
 		if gerritReset:
 			print 'git remote remove gerrit'
 			print 'git remote add gerrit ssh://h2o64@gerrit.aosparadox.org:29418/' + project[k]
