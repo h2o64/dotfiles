@@ -12,7 +12,7 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini",
 "LineageOS/android_device_wingtech_wt88047"]
-commit_blacklist = ['163950','163951','164088','165234','166050']
+commit_blacklist = ['163950','163951','164088','165234','166050','163241','162818']
 gerrit_extra = ['164165','166637']
 
 github_extra = [
