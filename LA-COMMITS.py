@@ -10,8 +10,7 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 "LineageOS/android_device_yu_lettuce",
 "LineageOS/android_device_yu_jalebi"]
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
-"LineageOS/android_device_xiaomi_gemini",
-"LineageOS/android_device_wingtech_wt88047"]
+"LineageOS/android_device_xiaomi_gemini"]
 commit_blacklist = ['163950','163951','164088','165234','166050','163241','162818']
 gerrit_extra = ['164165','166637']
 
@@ -22,18 +21,7 @@ github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/37a3e415e4ac603a58794c2aeeedb656ab02cecb','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/57e91316d3b1836fcd3497564f49a73e2fcdb14b','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/1f2d307a3a4d246935faff865f690aae87938f2c','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/0de26a136a35c5512a5e760fefcbe50b1f3a56a1','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/e3e65128fee2c21a854dcb05e5090376fb234a49','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/277e9fa175201eb7fa5a00e70573faa6b4b75f9a','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/a93d4b2a27b3cb2b06686dbc9fdc3b335711a603','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/021c1cd29d39b64739cd8e021ee6c11ef97c6ce0','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/d68136b2f681f728420ab35628f185c3d46274df','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/ee5e242a84082b2373c269477b72bcbb283b2ba9','cm-14.1'),
-('h2o64/android_kernel_cyanogen_msm8916/commit/eb6a54d0c04c79f6d3ec82c5eaeda00bc3e0f9b0','cm-14.1')]
+('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1')]
 
 # Helpers
 
