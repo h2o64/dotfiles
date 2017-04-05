@@ -95,7 +95,7 @@ def gather():
 		# Convert timestamps to real time
 		time_list = []
 		for m in commits_edited:
-			time_list.append((m[0],utctotimestamp(m[1]),m[2],m[3],m[4],m[5]))
+			time_list.append((m[0],utctotimestamp(m[1]),int(m[2]),m[3],m[4],m[5]))
 		# Sort everything
 		time_list = quicksort(time_list)
 		return time_list
