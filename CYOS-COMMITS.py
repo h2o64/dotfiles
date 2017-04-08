@@ -3,9 +3,11 @@ import datetime
 import os
 import copy
 
-curl = 'ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query --current-patch-set status:open | egrep "project:|number:|subject:|lastUpdated:|ref:"'
+curl = 'ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query --current-patch-set status:open | egrep "project:|number:|subject:|lastUpdated:|ref:|branch:"'
 commit_blacklist = ['163950','163951','164088','165234','166050']
 github_extra = []
+#sumbit_command = 'gerrit review --code-review +2 --submit'
+sumbit_command = ''
 
 # Helpers
 
@@ -47,22 +49,24 @@ def gather():
 		j = 0
 		while j < len(new_data):
 			# Project
+			# Branch
 			# Number
 			# Subject
 			# lastUpdated
 			# patchset (not used)
 			# ref
-			commits_list.append((new_data[j],new_data[j+1],new_data[j+2],new_data[j+3],new_data[j+4],new_data[j+5]))
-			j += 6
+			commits_list.append((new_data[j],new_data[j+1],new_data[j+2],new_data[j+3],new_data[j+4],new_data[j+5],new_data[j+6]))
+			j += 7
 		# Remove unwanted strings
 		for k in range(len(commits_list)):
 			project = commits_list[k][0].replace("  project: ", "")
-			updated = commits_list[k][3].replace("  lastUpdated: ", "")
-			number = commits_list[k][1].replace("  number: ", "")
-			subject = commits_list[k][2].replace("  subject: ", "")
-			patchset = commits_list[k][4].replace("    number: ", "")
-			ref = commits_list[k][5].replace("    ref: ", "")
-			commits_list[k] = (project,updated,number,subject,patchset,ref) # Add lastUpdated in higher prio
+			branch = commits_list[k][1].replace("  branch: ", "")
+			updated = commits_list[k][4].replace("  lastUpdated: ", "")
+			number = commits_list[k][2].replace("  number: ", "")
+			subject = commits_list[k][3].replace("  subject: ", "")
+			patchset = commits_list[k][5].replace("    number: ", "")
+			ref = commits_list[k][6].replace("    ref: ", "")
+			commits_list[k] = (project,branch,updated,number,subject,patchset,ref) # Add lastUpdated in higher prio
 		# Only take authorized repos
 		commits_edited = []
 		for l in commits_list:
@@ -70,7 +74,7 @@ def gather():
 		# Convert timestamps to real time
 		time_list = []
 		for m in commits_edited:
-			time_list.append((m[0],utctotimestamp(m[1]),int(m[2]),m[3],m[4],m[5]))
+			time_list.append((m[0],m[1],utctotimestamp(m[2]),int(m[3]),m[4],m[5],m[6]))
 		# Sort everything
 		time_list = quicksort(time_list)
 		return time_list
@@ -106,20 +110,26 @@ def picks():
 	old_cd = ''
 	old_project = ''
 	old_bool = False
-	print 'CURRENT_DIR=$1'
-	print 'CURRENT_DIR_NAME=$(basename $CURRENT_DIR)'
-	for gerrit_c in gerrit_list:
-		if gerrit_c[0] == 'yu-community-os/android_external_fsck_msdos':
-			old_cd = cd_print(('external/fsck_msdos'),old_cd)
-		elif gerrit_c[0] == 'yu-community-os/android_external_wpa_supplicant_8':
-			old_cd = cd_print(('external/wpa_supplicant_8'),old_cd)
-		else:
-			old_cd = cd_print((gerrit_c[0].replace('yu-community-os/android_','').replace('yu-community-os/proprietary_','')).replace('_','/'),old_cd)
-		print "git fetch ssh://h2o64@gerrit.aosparadox.org:29418/" + gerrit_c[0] + " " + gerrit_c[5] + " && git cherry-pick FETCH_HEAD # " + gerrit_c[3]
-	for github_c in github_list:
-		old_cd = cd_print((github_c[0].replace('android_','').replace('proprietary_','').replace('_','/') + "\ngit fetch " + github_c[1] + ' ' + github_c[3]),old_cd)
-		print 'git cherry-pick ' + github_c[2]
-	print 'cd $CURRENT_DIR'
+	if sumbit_command != '':
+		for gerrit_c in gerrit_list:
+			print "ssh -p 29418 h2o64@gerrit.aosparadox.org " + sumbit_command + " " + str(gerrit_c[2]) + "," + gerrit_c[4]
+	else:
+		print 'CURRENT_DIR=$1'
+		print 'CURRENT_DIR_NAME=$(basename $CURRENT_DIR)'
+		for gerrit_c in gerrit_list:
+			if gerrit_c[0] == 'yu-community-os/android_external_fsck_msdos':
+				old_cd = cd_print(('external/fsck_msdos'),old_cd)
+			elif gerrit_c[0] == 'yu-community-os/android_external_wpa_supplicant_8':
+				old_cd = cd_print(('external/wpa_supplicant_8'),old_cd)
+			elif len(gerrit_c[1]) != 8:
+				old_cd = cd_print((gerrit_c[0].replace('yu-community-os/android_','').replace('yu-community-os/proprietary_','')).replace('_','/') + '/msm' + gerrit_c[1][-4:],old_cd)
+			else:
+				old_cd = cd_print((gerrit_c[0].replace('yu-community-os/android_','').replace('yu-community-os/proprietary_','')).replace('_','/'),old_cd)
+			print "git fetch ssh://h2o64@gerrit.aosparadox.org:29418/" + gerrit_c[0] + " " + gerrit_c[6] + " && git cherry-pick FETCH_HEAD # " + gerrit_c[4]
+		for github_c in github_list:
+			old_cd = cd_print((github_c[0].replace('android_','').replace('proprietary_','').replace('_','/') + "\ngit fetch " + github_c[1] + ' ' + github_c[3]),old_cd)
+			print 'git cherry-pick ' + github_c[2]
+		print 'cd $CURRENT_DIR'
 
 if __name__ == '__main__':
     picks()
