@@ -4,9 +4,10 @@ import os
 import copy
 
 curl = 'ssh -p 29418 h2o64@gerrit.aosparadox.org gerrit query --current-patch-set status:open | egrep "project:|number:|subject:|lastUpdated:|ref:|branch:"'
-commit_blacklist = ['163950','163951','164088','165234','166050']
+commit_blacklist = ['662']
 github_extra = []
 #sumbit_command = 'gerrit review --code-review +2 --submit'
+#sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
 
 # Helpers
@@ -112,7 +113,7 @@ def picks():
 	old_bool = False
 	if sumbit_command != '':
 		for gerrit_c in gerrit_list:
-			print "ssh -p 29418 h2o64@gerrit.aosparadox.org " + sumbit_command + " " + str(gerrit_c[2]) + "," + gerrit_c[4]
+			print "ssh -p 29418 h2o64@gerrit.aosparadox.org " + sumbit_command + " " + str(gerrit_c[3]) + "," + gerrit_c[5] + ' # ' + gerrit_c[4]
 	else:
 		print 'CURRENT_DIR=$1'
 		print 'CURRENT_DIR_NAME=$(basename $CURRENT_DIR)'
