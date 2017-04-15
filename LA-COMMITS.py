@@ -21,7 +21,9 @@ github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1')]
+('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1'),
+('h2o64/proprietary_vendor_yu/commit/5bc5de2bb5f074d6f62c77fa8dccb492759a4943','cm-14.1-data'),
+('h2o64/proprietary_vendor_yu/commit/00280883fdbe86494df5a49cc11c570a58c761db','cm-14.1-data')]
 
 # Helpers
 
