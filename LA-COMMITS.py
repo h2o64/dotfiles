@@ -13,6 +13,7 @@ target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini"]
 commit_blacklist = ['163950','163951','164088','165234','166050','163241','162818','168685']
 gerrit_extra = ['164165','166637']
+gerrit_extra += ['168866'} # dmalloc
 
 github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876','cm-14.1'),
