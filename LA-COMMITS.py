@@ -132,6 +132,7 @@ def isLA_ONLY(project_name,old_p,old_b):
 	la_bool = True
 	for allowed in target:
 		if project_name in allowed: la_bool = False
+	if project_name in "LineageOS/android_bionic": la_bool = False
 	if la_bool == True and project_name != old_p and old_b == False: print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
 	if la_bool == False and project_name != old_p and old_b == True: print 'fi'
 	old_p = project_name
