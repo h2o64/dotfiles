@@ -12,7 +12,8 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini"]
 commit_blacklist = ['163950','163951','164088','165234','166050','163241','162818','168685']
-gerrit_extra = ['169017'] # dmalloc
+#gerrit_extra = ['169017'] # dmalloc
+gerrit_extra = ['']
 
 github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876','cm-14.1'),
@@ -57,7 +58,7 @@ def gather():
 			for repo in target_open:
 				curl_open = 'ssh -p 29418 h2o64@review.lineageos.org gerrit query --current-patch-set status:open project:' + repo + ' | egrep "project:|number:|subject:|lastUpdated:|ref:"'
 				data += os.popen(curl_open).read()
-		if gerrit_extra != []:
+		if gerrit_extra != ['']:
 			for extra in gerrit_extra:
 				curl_extra = 'ssh -p 29418 h2o64@review.lineageos.org gerrit query --current-patch-set status:open change:' + extra + ' | egrep "project:|number:|subject:|lastUpdated:|ref:"'
 				data += os.popen(curl_extra).read()
