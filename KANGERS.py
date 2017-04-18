@@ -77,13 +77,14 @@ def compare(folder):
 		path = folder + '/' + filename
 		if os.path.isfile(path) and getmd5(path) in reference : print 'Kang on ' + path + ' with ' + getmd5(path)
 
-def exract(argv):
+def extract(argv):
 	extract_path = str(sys.argv[1]).replace('.zip','')
-	os.popen('unzip ' + str(sys.argv[1]) + '-d ' + extract_path)
-	os.popen('python sdat2img.py ' + extract_path + '/system.transfer.list ' + extract_path + '/system.new.dat ' + extract_path + '/system.img')
-	os.popen('mkdir ' + extract_path + '/sys')
+	os.popen('mkdir -p ' + extract_path + '/sys')
+	os.popen('unzip ' + str(sys.argv[1]) + ' -d ' + extract_path)
+	os.system('python sdat2img.py ' + extract_path + '/system.transfer.list ' + extract_path + '/system.new.dat ' + extract_path + '/system.img > /dev/null ')
 	os.popen('sudo mount -o loop ' + extract_path + '/system.img ' + extract_path + '/sys')
-	compare(extract_path)
+	compare(extract_path + '/sys/')
+	os.popen('sudo umount ' + extract_path + '/sys')
 
 if __name__ == '__main__':
     extract(sys.argv)
