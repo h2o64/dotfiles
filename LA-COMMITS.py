@@ -11,10 +11,10 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 "LineageOS/android_device_yu_jalebi"]
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini"]
-commit_blacklist = ['163950','163951','164088','165234','166050','163241','162818','168685']
-#gerrit_extra = ['169017'] # dmalloc
-gerrit_extra = ['']
+commit_blacklist = ['163950','163951','164088','165234','166050','165010']
+gerrit_extra = ['169791','166675']
 
+'''
 github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/0dff53419ac9dd114f5e028c720d5ea931febd81','cm-14.1'),
@@ -22,9 +22,9 @@ github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/5bc5de2bb5f074d6f62c77fa8dccb492759a4943','cm-14.1-data'),
-('h2o64/proprietary_vendor_yu/commit/00280883fdbe86494df5a49cc11c570a58c761db','cm-14.1-data')]
+('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1')]
+'''
+github_extra = []
 
 # Helpers
 
