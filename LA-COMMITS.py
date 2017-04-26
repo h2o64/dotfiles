@@ -134,8 +134,8 @@ def isLA_ONLY(project_name,old_p,old_b):
 	for allowed in target:
 		if project_name in allowed: la_bool = False
 	if project_name in "LineageOS/android_bionic": la_bool = False
-	if la_bool == True and project_name != old_p and old_b == False: print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
-	if la_bool == False and project_name != old_p and old_b == True: print 'fi'
+	if la_bool and project_name != old_p and not old_b: print 'if [ $CURRENT_DIR_NAME == "LA" ]; then'
+	if not la_bool and project_name != old_p and old_b: print 'fi'
 	old_p = project_name
 	old_b = la_bool
 	return (old_p,old_b)
@@ -152,6 +152,7 @@ def picks():
 		old_project,old_bool = isLA_ONLY(gerrit_c[0],old_project,old_bool)
 		old_cd = cd_print((gerrit_c[0].replace('LineageOS/android_','')).replace('_','/'),old_cd)
 		print "git fetch ssh://h2o64@review.lineageos.org:29418/" + gerrit_c[0] + " " + gerrit_c[5] + " && git cherry-pick FETCH_HEAD # " + gerrit_c[3]
+		if gerrit_c == gerrit_list[-1] and old_bool: print 'fi'
 	for github_c in github_list:
 		# old_project,old_bool = isLA_ONLY(github_c[0].replace('/',''),old_project,old_bool)
 		old_cd = cd_print((github_c[0].replace('android_','').replace('proprietary_','').replace('_','/') + "\ngit fetch " + github_c[1] + ' ' + github_c[3]),old_cd)
