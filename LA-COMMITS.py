@@ -12,7 +12,7 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini"]
 commit_blacklist = ['163950','163951','164088','165234','166050','165010']
-gerrit_extra = ['169791','166675']
+gerrit_extra = ['169791','166675','170068','170067'] # Mike things
 gerrit_extra = ['168593','169142','169143','169144','169145','169146','169147','169148','169149','169150','169151','169152','169153','169154','167952'] # xiaomi kernel
 '''
 github_extra = [
