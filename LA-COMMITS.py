@@ -26,7 +26,7 @@ github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','cm-14.1'),
 ('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1')]
 '''
-github_extra = []
+github_extra = [('LineageOS/android_device_yu_lettuce/commit/c226459166e9f29cb6fc953ddf3e581c74c7c590','cm-14.1')]
 
 # Helpers
 
