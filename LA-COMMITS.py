@@ -12,20 +12,10 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini"]
 commit_blacklist = ['163950','163951','164088','166050','165010']
-gerrit_extra = ['169791'] # Mike things on common tree
+gerrit_extra = ['169791','170702'] # Mike things on common tree
 gerrit_extra += ['169533','170067','170068','170600','170654','170624'] # Random kernel (8916) things
-gerrit_extra += ['168593','169142','169143','169144','169145','169146','169147','169148','169149','169150','169151','169152','169153','169154','167952'] # xiaomi kernel
+gerrit_extra += ['171163'] # xiaomi kernel
 
-'''
-github_extra = [
-('h2o64/proprietary_vendor_yu/commit/07fc4e31b395da7b276f09a02daffb051d361876','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/0dff53419ac9dd114f5e028c720d5ea931febd81','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/3b4fb2d2cf8b661a95b02244f33b27f4c2302601','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/d7e497f4f00c96b5d77acc496a023f05c6d4e71c','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/a5366698a7904bdb4a2781140d2ab5dd09bc8c70','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/b2d1cecffe81b88160f265bba1ebfaf8df26ff1e','cm-14.1'),
-('h2o64/proprietary_vendor_yu/commit/75556a5c330d44da133fd95a21ebc26f7118b884','cm-14.1')]
-'''
 github_extra = [('LineageOS/android_device_yu_lettuce/commit/c226459166e9f29cb6fc953ddf3e581c74c7c590','cm-14.1')]
 
 # Helpers
