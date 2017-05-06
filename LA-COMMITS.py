@@ -10,13 +10,14 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 "LineageOS/android_device_yu_lettuce",
 "LineageOS/android_device_yu_jalebi"]
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
-"LineageOS/android_device_xiaomi_gemini"]
+"LineageOS/android_device_xiaomi_gemini",
+"LineageOS/android_kernel_xiaomi_msm8996"]
 commit_blacklist = ['163950','163951','164088','166050','165010']
+commit_blacklist += ['167063','167064','165605'] # xiaomi WIP srgb and dt2w
 gerrit_extra = ['169791','170702'] # Mike things on common tree
 gerrit_extra += ['169533','170067','170068','170600','170654','170624'] # Random kernel (8916) things
-gerrit_extra += ['171163'] # xiaomi kernel
-
 github_extra = [('LineageOS/android_device_yu_lettuce/commit/c226459166e9f29cb6fc953ddf3e581c74c7c590','cm-14.1')]
+
 
 # Helpers
 
@@ -28,6 +29,8 @@ def totimestamp(dt, epoch=datetime.datetime(1970,1,1)):
 
 def utctotimestamp(string):
 	return totimestamp(datetime.datetime.strptime(string[:len(string)-4], "%Y-%m-%d %H:%M:%S"))
+
+min_date = utctotimestamp("2017-01-25 00:00:00 UTC")
 
 def quicksort(t):
 	if t == []: return []
@@ -90,7 +93,8 @@ def gather():
 		# Convert timestamps to real time
 		time_list = []
 		for m in commits_edited:
-			time_list.append((m[0],utctotimestamp(m[1]),int(m[2]),m[3],m[4],m[5]))
+			commit_time = utctotimestamp(m[1])
+			if commit_time > min_date : time_list.append((m[0],commit_time,int(m[2]),m[3],m[4],m[5]))
 		# Sort everything
 		time_list = quicksort(time_list)
 		return time_list
