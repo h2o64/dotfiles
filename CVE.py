@@ -19,31 +19,31 @@ def quicksort(t):
 	return quicksort(t1)+[pivot]+quicksort(t2)
 
 def gerrit_ssh(cve_name):
-	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query ' + cve_name + ' | grep "subject: "').read()
-	if tmp == '' : return
+	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query ' + cve_name + ' | grep "subject: "').readlines()
+	if tmp == [] : return (cve_name, "PYTHON-CVE : Commit not found") 
 	# Filter data
 	cursor = 0
 	proper_list = []
-	for i in range(len(tmp)):
-		if tmp[cursor:i].endswith('\n'):
-			proper_list.append((tmp[cursor:i-1]).replace("  subject: ", ""))
-			cursor = i
-		if i == len(tmp) - 1: proper_list.append(tmp[cursor:i])
+	for i in tmp: proper_list.append(i.replace("  subject: ", "").replace("\n", ""))
+	if len(tmp) == 1 : return (cve_name,tmp[0].replace("  subject: ", "").replace("\n", ""))
 	sorted_list = quicksort(proper_list) # Helps for duplicates
 	# Get most occured string
 	max_length = 0
 	length = 0
 	old_item = proper_list[0]
-	best = ''
+	best = proper_list[0]
 	for item in proper_list:
-		if item == old_item: length += 1
+		if item == old_item:
+			length += 1
+			if max_length <= length:
+				max_length = length
+				best = item
 		else:
-					if max_length <= length:
-						max_length = length
-						best = old_item
-						length = 0
+			length = 0
+		if item == proper_list[-1] and max_length <= length :	
+			best = item
 		old_item = item
-	if best != '' : return (cve_name,best)
+	return (cve_name,best)
 
 '''
 def multiprocess_cve(cve_list):
@@ -62,7 +62,7 @@ def all_cve(argv):
 	print 'CVE_DB = ['
 	for i in cves:
 		string = str(gerrit_ssh(i[:-1]))
-		if string != 'None' : print str(gerrit_ssh(i[:-1])) + ','
+		print string + ','
 	print "]"
 
 def check_for_cve(argv):
@@ -72,7 +72,8 @@ def check_for_cve(argv):
 	#print log
 	for commit in log:
 		for cve in CVE_DB:
-			if cve[1] in commit:
+			if cve[1] == "PYTHON-CVE : Commit not found" : print cve[0] + " commit not found"
+			elif cve[1] in commit:
 				print cve[0] + " patched"
 				patched.append(cve[0])
 	for cve in CVE_DB:
