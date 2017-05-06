@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import os
 import copy
 import sys
+from CVE_DB import *
 
 def quicksort(t):
 	if t == []: return []
@@ -52,7 +55,7 @@ def multiprocess_cve(cve_list):
 	pool.join()
 '''
 
-def all_cve(filename):
+def all_cve(argv):
 	filename = sys.argv[1]
 	tmp = open(filename, "r")
 	cves = tmp.readlines()
@@ -62,6 +65,19 @@ def all_cve(filename):
 		if string != 'None' : print str(gerrit_ssh(i[:-1])) + ','
 	print "]"
 
+def check_for_cve(argv):
+	git_path = sys.argv[1]
+	log = os.popen('git --git-dir ' + git_path + '/.git log --since="2013-01-00"--pretty=oneline').readlines()
+	patched = []
+	#print log
+	for commit in log:
+		for cve in CVE_DB:
+			if cve[1] in commit:
+				print cve[0] + " patched"
+				patched.append(cve[0])
+	for cve in CVE_DB:
+		if cve[0] not in patched: print cve[0] + " unpatched"
+
 if __name__ == '__main__':
-    all_cve(sys.argv)
+    check_for_cve(sys.argv)
 
