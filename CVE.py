@@ -69,15 +69,16 @@ def check_for_cve(argv):
 	git_path = sys.argv[2]
 	log = os.popen('git --git-dir ' + git_path + '/.git log --since="2013-01-00"--pretty=oneline').readlines()
 	patched = []
-	#print log
 	for commit in log:
 		for cve in CVE_DB:
-			if cve[1] == "PYTHON-CVE : Commit not found" : print cve[0] + " commit not found"
-			elif cve[1] in commit:
+			# if cve[1] == "PYTHON-CVE : Commit not found" : print cve[0] + " commit not found"
+			if cve[1] in commit:
 				print cve[0] + " patched"
 				patched.append(cve[0])
 	for cve in CVE_DB:
-		if cve[0] not in patched: print cve[0] + " unpatched"
+		if cve[0] not in patched:
+			if cve[1] == "PYTHON-CVE : Commit not found" : print cve[0] + " commit not found"
+			else: print cve[0] + " unpatched"
 
 if __name__ == '__main__':
 		if sys.argv[1] == "db" : all_cve(sys.argv)
