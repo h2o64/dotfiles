@@ -56,7 +56,7 @@ def multiprocess_cve(cve_list):
 '''
 
 def all_cve(argv):
-	filename = sys.argv[1]
+	filename = sys.argv[2]
 	tmp = open(filename, "r")
 	cves = tmp.readlines()
 	print 'CVE_DB = ['
@@ -66,7 +66,7 @@ def all_cve(argv):
 	print "]"
 
 def check_for_cve(argv):
-	git_path = sys.argv[1]
+	git_path = sys.argv[2]
 	log = os.popen('git --git-dir ' + git_path + '/.git log --since="2013-01-00"--pretty=oneline').readlines()
 	patched = []
 	#print log
@@ -79,5 +79,7 @@ def check_for_cve(argv):
 		if cve[0] not in patched: print cve[0] + " unpatched"
 
 if __name__ == '__main__':
-    check_for_cve(sys.argv)
+		if sys.argv[1] == "db" : all_cve(sys.argv)
+		elif sys.argv[1] == "check" : check_for_cve(sys.argv)
+		else: print "Error wrong arguments"
 
