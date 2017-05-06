@@ -1,5 +1,6 @@
 import os
 import copy
+import sys
 
 def quicksort(t):
 	if t == []: return []
@@ -52,6 +53,7 @@ def multiprocess_cve(cve_list):
 '''
 
 def all_cve(filename):
+	filename = sys.argv[1]
 	tmp = open(filename, "r")
 	cves = tmp.readlines()
 	print 'CVE_DB = ['
@@ -59,23 +61,7 @@ def all_cve(filename):
 		string = str(gerrit_ssh(i[:-1]))
 		if string != 'None' : print str(gerrit_ssh(i[:-1])) + ','
 	print "]"
-			
-		
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    all_cve(sys.argv)
 
