@@ -2,6 +2,7 @@ import os
 import copy
 import sys
 from CVE_DB import *
+from CVE_EXTRA import *
 
 def most_common(lst):
     return max(set(lst), key=lst.count)
@@ -19,21 +20,25 @@ def quicksort(t):
 				t2.append(x)
 	return quicksort(t1)+[pivot]+quicksort(t2)
 
+def commit_subj_short(string):
+	for i in reversed(range(len(string))):
+		if string[i] == ":": return string[i+2:]
+		if i == 0: return string
+
 def gerrit_ssh(cve_name):
 	# Add manual exception (Gerrit isn't perfect)
-	if cve_name == "CVE-2014-4323": return (cve_name,"msm: mdp: Validate input arguments from user space")
-	elif cve_name == "CVE-2016-8412": return (cve_name,"msm: sensor: Adding mutex for actuator power down operations")
+	if cve_name == "CVE-2014-4323": return (cve_name,"Validate input arguments from user space")
+	elif cve_name == "CVE-2016-8412": return (cve_name,"Adding mutex for actuator power down operations")
 	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org "gerrit query  (status:merged ' + cve_name + ') OR (status:open ' + cve_name + ')" | grep "subject: "').readlines()
-	if tmp == [] : return (cve_name, "PYTHON-CVE : Commit not found") 
+	if tmp == [] : return (cve_name, "PYTHON-CVE : Commit not found")
 	# Filter data
 	cursor = 0
 	proper_list = []
 	for i in tmp: proper_list.append(i.replace("  subject: ", "").replace("\n", ""))
-	if len(tmp) == 1 : return (cve_name,tmp[0].replace("  subject: ", "").replace("\n", ""))
-	for j in proper_list:
-		j.replace("BACKPORT","")
-		j.replace("UPSTREAM","")
-	sorted_list = quicksort(proper_list) # Helps for duplicates
+	if len(tmp) == 1 : return (cve_name,commit_subj_short(tmp[0].replace("  subject: ", "").replace("\n", "")))
+	new_list = []
+	for j in proper_list: new_list.append(commit_subj_short(j))
+	sorted_list = quicksort(new_list) # Helps for duplicates
 	return (cve_name,most_common(sorted_list))
 
 def get_kernel_rev(target):
@@ -44,6 +49,10 @@ def get_kernel_rev(target):
 	else: return 3.10
 
 def get_cherry(cve_id):
+	kernel = get_kernel_rev(sys.argv[2])
+	if cve_id == "CVE-2014-4323": return "git fetch ssh://h2o64@review.lineageos.org:29418/LineageOS/android_kernel_lge_msm8974 refs/changes/00/88900/1 && git cherry-pick FETCH_HEAD # " + cve_id
+	elif cve_id == "CVE-2016-8412":
+		if kernel > 3.04: return "git fetch ssh://h2o64@review.lineageos.org:29418/LineageOS/android_kernel_motorola_msm8992 refs/changes/45/164445/1 && git cherry-pick FETCH_HEAD # " + cve_id
 	tmp = 'ssh -p 29418 h2o64@review.lineageos.org "gerrit query --current-patch-set (status:merged ' + cve_id + ') OR (status:open ' + cve_id + ')" | egrep "project:|number:|subject:|ref:"'
 	data = os.popen(tmp).readlines()
 	# Make a commit struct
@@ -90,7 +99,6 @@ def get_cherry(cve_id):
 	# Select THE commit based on kernel rev
 	picked = target_picks[0]
 	avail_ver = [i[0] for i in target_picks]
-	kernel = get_kernel_rev(sys.argv[2])
 	if kernel in avail_ver: pref = kernel
 	elif kernel < min(avail_ver): return "No patch for this linux revision"
 	else: pref = max(avail_ver)
@@ -118,23 +126,27 @@ def all_cve(filename):
 		print string + ','
 	print "]"
 
+def is_Extra(cve_num):
+	for i in CVE_DB_EXTRA:
+		if cve_num == i[0]: return True
+	return False
+
 def check_for_cve(folder, suggestions):
 	git_path = folder
-	log = set(os.popen('git --git-dir ' + git_path + '/.git log --no-merges --since="2013-01-00" --pretty=oneline').readlines())
+	log = set(os.popen('git --git-dir ' + git_path + '/.git log --no-merges --since="2012-01-00" --pretty=oneline').readlines())
 	patched = []
 	for commit in log:
-		for cve in CVE_DB:
+		for cve in CVE_DB + CVE_DB_EXTRA:
 			if cve[1] in commit[41:]:
 				print cve[0] + " patched"
 				patched.append(cve[0])
-	for cve in CVE_DB:
+	for cve in CVE_DB + CVE_DB_EXTRA:
 		tmp = ''
 		if cve[0] not in patched:
-			if cve[1] == "PYTHON-CVE : Commit not found" : print cve[0] + " commit not found"
+			if cve[1] == "PYTHON-CVE : Commit not found" and not is_Extra(cve[0]): print cve[0] + " commit not found"
 			else:
 				if suggestions: print get_cherry(cve[0]) + ' # ' + cve[0]
 				else: print cve[0] + " unpatched"
-
 
 if __name__ == '__main__':
 		if sys.argv[1] == "db" : all_cve(sys.argv[2])
