@@ -20,23 +20,31 @@ def quicksort(t):
 	return quicksort(t1)+[pivot]+quicksort(t2)
 
 def gerrit_ssh(cve_name):
-	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org gerrit query ' + cve_name + ' | grep "subject: "').readlines()
+	# Add manual exception (Gerrit isn't perfect)
+	if cve_name == "CVE-2014-4323": return (cve_name,"msm: mdp: Validate input arguments from user space")
+	elif cve_name == "CVE-2016-8412": return (cve_name,"msm: sensor: Adding mutex for actuator power down operations")
+	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org "gerrit query  (status:merged ' + cve_name + ') OR (status:open ' + cve_name + ')" | grep "subject: "').readlines()
 	if tmp == [] : return (cve_name, "PYTHON-CVE : Commit not found") 
 	# Filter data
 	cursor = 0
 	proper_list = []
 	for i in tmp: proper_list.append(i.replace("  subject: ", "").replace("\n", ""))
 	if len(tmp) == 1 : return (cve_name,tmp[0].replace("  subject: ", "").replace("\n", ""))
+	for j in proper_list:
+		j.replace("BACKPORT","")
+		j.replace("UPSTREAM","")
 	sorted_list = quicksort(proper_list) # Helps for duplicates
 	return (cve_name,most_common(sorted_list))
 
 def get_kernel_rev(target):
-	if ("8996" or "8937" or "msm8953") in target: return 3.18
-	elif ("8974" or "8226" or "8960" or "exynos" or "8x60" or "klte" or "google_msm") in target: return 3.04
+	v1 = ["8974","8226","8960","exynos","8x60","klte","google_msm"]
+	v3 = ["8996","8937","8953"]
+	if any(x in target for x in v3): return 3.18
+	elif any(x in target for x in v1): return 3.04
 	else: return 3.10
 
 def get_cherry(cve_id):
-	tmp = 'ssh -p 29418 h2o64@review.lineageos.org gerrit query --current-patch-set ' + cve_id + ' | egrep "project:|number:|subject:|ref:"'
+	tmp = 'ssh -p 29418 h2o64@review.lineageos.org "gerrit query --current-patch-set (status:merged ' + cve_id + ') OR (status:open ' + cve_id + ')" | egrep "project:|number:|subject:|ref:"'
 	data = os.popen(tmp).readlines()
 	# Make a commit struct
 	commits_list = []
