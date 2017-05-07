@@ -14,6 +14,7 @@ target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_kernel_xiaomi_msm8996"]
 commit_blacklist = ['163950','163951','164088','166050','165010']
 commit_blacklist += ['167063','167064','165605'] # xiaomi WIP srgb and dt2w
+commit_blacklist += ['172036','172052','172050','172049','172051','172056','172055','172054','172053','172033','172037','172032','172031','172038','172035','172034'] # yu-blobs
 gerrit_extra = ['169791','170702'] # Mike things on common tree
 gerrit_extra += ['169533','170067','170068','170600','170654','170624'] # Random kernel (8916) things
 github_extra = [('LineageOS/android_device_yu_lettuce/commit/c226459166e9f29cb6fc953ddf3e581c74c7c590','cm-14.1')]
