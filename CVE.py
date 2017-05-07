@@ -31,7 +31,7 @@ def gerrit_ssh(cve_name):
 	return (cve_name,most_common(sorted_list))
 
 def get_kernel_rev(target):
-	if ("8996" or "8937") in target: return 3.18
+	if ("8996" or "8937" or "msm8953") in target: return 3.18
 	elif ("8974" or "8226" or "8960" or "exynos" or "8x60" or "klte" or "google_msm") in target: return 3.04
 	else: return 3.10
 
