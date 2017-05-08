@@ -18,7 +18,8 @@ commit_blacklist += ['172036','172052','172050','172049','172051','172056','1720
 gerrit_extra = ['169791','170702'] # Mike things on common tree
 gerrit_extra += ['169533','170067','170068','170600','170654','170624'] # Random kernel (8916) things
 github_extra = [('LineageOS/android_device_yu_lettuce/commit/c226459166e9f29cb6fc953ddf3e581c74c7c590','cm-14.1')]
-
+#sumbit_command = 'gerrit review --code-review +1'
+sumbit_command = ''
 
 # Helpers
 
@@ -146,13 +147,17 @@ def picks():
 	old_bool = False
 	print 'CURRENT_DIR=$1'
 	print 'CURRENT_DIR_NAME=$(basename $CURRENT_DIR)'
-	for gerrit_c in gerrit_list:
-		old_project,old_bool = isLA_ONLY(gerrit_c[0],old_project,old_bool)
-		old_cd = cd_print((gerrit_c[0].replace('LineageOS/android_','')).replace('_','/'),old_cd)
-		print "git fetch ssh://h2o64@review.lineageos.org:29418/" + gerrit_c[0] + " " + gerrit_c[5] + " && git cherry-pick FETCH_HEAD # " + gerrit_c[3]
-		if gerrit_c == gerrit_list[-1] and old_bool:
-			print 'fi'
-			old_bool = False
+	if sumbit_command != '':
+		for gerrit_c in gerrit_list:
+			print "ssh -p 29418 h2o64@review.lineageos.org " + sumbit_command + " " + str(gerrit_c[2]) + "," + gerrit_c[4] + ' # ' + gerrit_c[5]
+	else:
+		for gerrit_c in gerrit_list:
+			old_project,old_bool = isLA_ONLY(gerrit_c[0],old_project,old_bool)
+			old_cd = cd_print((gerrit_c[0].replace('LineageOS/android_','')).replace('_','/'),old_cd)
+			print "git fetch ssh://h2o64@review.lineageos.org:29418/" + gerrit_c[0] + " " + gerrit_c[5] + " && git cherry-pick FETCH_HEAD # " + gerrit_c[3]
+			if gerrit_c == gerrit_list[-1] and old_bool:
+				print 'fi'
+				old_bool = False
 	for github_c in github_list:
 		old_project,old_bool = isLA_ONLY(github_c[0].replace('/',''),old_project,old_bool)
 		old_cd = cd_print((github_c[0].replace('android_','').replace('proprietary_','').replace('_','/') + "\ngit fetch " + github_c[1] + ' ' + github_c[3]),old_cd)
