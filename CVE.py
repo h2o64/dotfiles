@@ -25,28 +25,31 @@ def commit_subj_short(string):
 		if string[i] == ":": return string[i+2:]
 		if i == 0: return string
 
-def gerrit_ssh(cve_name):
-	# Add manual exception (Gerrit isn't perfect)
-	if cve_name == "CVE-2014-4323": return (cve_name,"Validate input arguments from user space")
-	elif cve_name == "CVE-2016-8412": return (cve_name,"Adding mutex for actuator power down operations")
-	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org "gerrit query  (status:merged ' + cve_name + ') OR (status:open ' + cve_name + ')" | grep "subject: "').readlines()
-	if tmp == [] : return (cve_name, "PYTHON-CVE : Commit not found")
-	# Filter data
-	cursor = 0
-	proper_list = []
-	for i in tmp: proper_list.append(i.replace("  subject: ", "").replace("\n", ""))
-	if len(tmp) == 1 : return (cve_name,commit_subj_short(tmp[0].replace("  subject: ", "").replace("\n", "")))
-	new_list = []
-	for j in proper_list: new_list.append(commit_subj_short(j))
-	sorted_list = quicksort(new_list) # Helps for duplicates
-	return (cve_name,most_common(sorted_list))
-
 def get_kernel_rev(target):
-	v1 = ["8974","8226","8960","exynos","8x60","klte","google_msm"]
+	v1 = ["8974","8226","8960","exynos","8x60","klte","google_msm","8930","hammerhead","mako"]
 	v3 = ["8996","8937","8953"]
 	if any(x in target for x in v3): return 3.18
 	elif any(x in target for x in v1): return 3.04
 	else: return 3.10
+
+def gerrit_ssh(cve_name):
+	# Add manual exception (Gerrit isn't perfect)
+	if cve_name == "CVE-2014-4323": return (cve_name,"Validate input arguments from user space",3.04)
+	elif cve_name == "CVE-2016-8412": return (cve_name,"Adding mutex for actuator power down operations",3.10)
+	tmp = os.popen('ssh -p 29418 h2o64@review.lineageos.org "gerrit query  (status:merged ' + cve_name + ') OR (status:open ' + cve_name + ')" | egrep "project:|subject:"').readlines()
+	if tmp == [] : return (cve_name, "PYTHON-CVE : Commit not found")
+	# Filter data
+	cursor = 0
+	proper_list = []
+	ver_list = []
+	for i in tmp:
+		if "project" in i: ver_list.append(get_kernel_rev(i))
+		if "subject" in i: proper_list.append(i.replace("  subject: ", "").replace("\n", ""))
+	if len(tmp) == 2 : return (cve_name,commit_subj_short(tmp[1].replace("  subject: ", "").replace("\n", "")),get_kernel_rev(tmp[0]))
+	new_list = []
+	for j in proper_list: new_list.append(commit_subj_short(j))
+	sorted_list = quicksort(new_list) # Helps for duplicates
+	return (cve_name,most_common(sorted_list),min(ver_list))
 
 def get_cherry(cve_id):
 	kernel = get_kernel_rev(sys.argv[2])
@@ -66,6 +69,7 @@ def get_cherry(cve_id):
 		# ref
 		commits_list.append((data[j],data[j+1],data[j+2],data[j+3],data[j+4]))
 		j += 5
+	if commits_list == []: return "Commit not found in Gerrit database"
 	# Remove unwanted strings
 	for k in range(len(commits_list)):
 		project = (commits_list[k][0].replace("  project: ", "")).replace("\n","")
@@ -132,19 +136,19 @@ def is_Extra(cve_num):
 	return False
 
 def check_for_cve(folder, suggestions):
-	git_path = folder
-	log = set(os.popen('git --git-dir ' + git_path + '/.git log --no-merges --since="2012-01-00" --pretty=oneline').readlines())
+	log = set(os.popen('git --git-dir ' + folder + '/.git log --no-merges --since="2012-01-00" --pretty=oneline').readlines())
 	patched = []
+	kernel_rev = get_kernel_rev(folder)
 	for commit in log:
 		for cve in CVE_DB + CVE_DB_EXTRA:
-			if cve[1] in commit[41:]:
+			if cve[1] != "PYTHON-CVE : Commit not found" and kernel_rev >= cve[2] and cve[1] in commit[41:]:
 				print cve[0] + " patched"
 				patched.append(cve[0])
 	for cve in CVE_DB + CVE_DB_EXTRA:
 		tmp = ''
 		if cve[0] not in patched:
 			if cve[1] == "PYTHON-CVE : Commit not found" and not is_Extra(cve[0]): print cve[0] + " commit not found"
-			else:
+			elif cve[1] != "PYTHON-CVE : Commit not found" and kernel_rev >= cve[2]:
 				if suggestions: print get_cherry(cve[0]) + ' # ' + cve[0]
 				else: print cve[0] + " unpatched"
 
