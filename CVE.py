@@ -53,9 +53,6 @@ def gerrit_ssh(cve_name):
 
 def get_cherry(cve_id):
 	kernel = get_kernel_rev(sys.argv[2])
-	if cve_id == "CVE-2014-4323": return "git fetch ssh://h2o64@review.lineageos.org:29418/LineageOS/android_kernel_lge_msm8974 refs/changes/00/88900/1 && git cherry-pick FETCH_HEAD # " + cve_id
-	elif cve_id == "CVE-2016-8412":
-		if kernel > 3.04: return "git fetch ssh://h2o64@review.lineageos.org:29418/LineageOS/android_kernel_motorola_msm8992 refs/changes/45/164445/1 && git cherry-pick FETCH_HEAD # " + cve_id
 	tmp = 'ssh -p 29418 h2o64@review.lineageos.org "gerrit query --current-patch-set (status:merged ' + cve_id + ') OR (status:open ' + cve_id + ')" | egrep "project:|number:|subject:|ref:"'
 	data = os.popen(tmp).readlines()
 	# Make a commit struct
