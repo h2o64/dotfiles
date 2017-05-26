@@ -12,10 +12,10 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini",
 "LineageOS/android_kernel_xiaomi_msm8996"]
-commit_blacklist = ['163950','163951','164088','166050','165010']
+commit_blacklist = ['163950','163951','164088','165010']
 commit_blacklist += ['167063','167064','165605'] # xiaomi WIP srgb and dt2w
 gerrit_extra = ['']
-github_extra = [('LineageOS/android_device_yu_lettuce/commit/c226459166e9f29cb6fc953ddf3e581c74c7c590','cm-14.1')]
+github_extra = ['']
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
 
@@ -139,7 +139,7 @@ def isLA_ONLY(project_name,old_p,old_b):
 
 def picks():
 	gerrit_list = gather()
-	github_list = gather_github()
+	if github_extra != ['']: github_list = gather_github()
 	old_cd = ''
 	old_project = ''
 	old_bool = False
@@ -156,13 +156,14 @@ def picks():
 			if gerrit_c == gerrit_list[-1] and old_bool:
 				print 'fi'
 				old_bool = False
-	for github_c in github_list:
-		old_project,old_bool = isLA_ONLY(github_c[0].replace('/',''),old_project,old_bool)
-		old_cd = cd_print((github_c[0].replace('android_','').replace('proprietary_','').replace('_','/') + "\ngit fetch " + github_c[1] + ' ' + github_c[3]),old_cd)
-		print 'git cherry-pick ' + github_c[2]
-		if github_c == github_list[-1] and old_bool :
-			print 'fi'
-			old_bool = False
+	if github_extra != ['']:
+		for github_c in github_list:
+			old_project,old_bool = isLA_ONLY(github_c[0].replace('/',''),old_project,old_bool)
+			old_cd = cd_print((github_c[0].replace('android_','').replace('proprietary_','').replace('_','/') + "\ngit fetch " + github_c[1] + ' ' + github_c[3]),old_cd)
+			print 'git cherry-pick ' + github_c[2]
+			if github_c == github_list[-1] and old_bool :
+				print 'fi'
+				old_bool = False
 	print 'cd $CURRENT_DIR'
 
 if __name__ == '__main__':
