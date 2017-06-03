@@ -4,6 +4,8 @@ import sys
 from CVE_DB import *
 from CVE_EXTRA import *
 
+CVE_EXTRA_KNOWN = [k[0] for k in CVE_DB_EXTRA]
+
 def most_common(lst):
     return max(set(lst), key=lst.count)
 
@@ -123,8 +125,10 @@ def all_cve(filename):
 	cves = tmp.readlines()
 	print 'CVE_DB = ['
 	for i in cves:
-		string = str(gerrit_ssh(i[:-1]))
-		print string + ','
+		target = i[:-1]
+		if target not in CVE_EXTRA_KNOWN:
+			string = str(gerrit_ssh(i[:-1]))
+			print string + ','
 	print "]"
 
 def is_Extra(cve_num):

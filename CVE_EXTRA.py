@@ -6,8 +6,6 @@ CVE_DB_EXTRA = [
 ('CVE-2016-10231', 'Fix out of bounds for mad input value',3.18),
 ('CVE-2016-10236', 'Avoid copying uninitialized data to userspace',3.18),
 ('CVE-2016-10293', 'Add debugfs support for panel command data type',3.10),
-('CVE-2016-10290', 'fix potential use after free issue when accessing debug_buffer',3.18),
-('CVE-2016-2061', 'Fix use after free in the recvmmsg exit path',3.18),
 ('CVE-2016-2062', 'Cast perfcounter query count to an unsigned int',3.18),
 ('CVE-2016-5349', 'support whitelist memory for qseecom_send_modfd_cmd',3.18),
 ('CVE-2016-5854', 'check size before calling copy_to_user()',4.4),
@@ -42,4 +40,9 @@ CVE_DB_EXTRA = [
 ('CVE-2017-6425', 'Clear compat structures before copying to user',3.18),
 ('CVE-2017-6874', 'Remove the atomicity from ucount->count',4.10),
 ('CVE-2017-7277', 'mark skbs with SCM_TIMESTAMPING_OPT_STATS',4.10),
+('LVT-2017-0001', 'Only expose su when daemon is running',3.04),
+('CVE-2015-0570', 'Validate ioctls for valid input length',3.1),
+('CVE-2016-2474', 'Validate CCXBEACONREQ IE fields',3.1),
+('CVE-2016-6739', 'Validate frame message before manipulating it',3.18),
+('CVE-2017-7979', 'net sched actions: allocate act cookie early',4.1),
 ]
