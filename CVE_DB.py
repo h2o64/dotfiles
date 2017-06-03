@@ -167,7 +167,7 @@ CVE_DB = [
 ('CVE-2016-6738', 'Validate Source and Destination addresses', 3.04),
 ('CVE-2016-6740', 'Avoid potential stack overflow', 3.04),
 ('CVE-2016-6741', 'Restructure data handling to be more robust', 3.04),
-('CVE-2016-6748', 'use %pK instead of %p which respects kptr_restrict sysctl.', 3.04),
+('CVE-2016-6748', 'use %pK instead of %p which respects kptr_restrict sysctl', 3.04),
 ('CVE-2016-6749', 'Change %p to %pK in debug messages', 3.04),
 ('CVE-2016-6750', 'Fix kernel address leak', 3.04),
 ('CVE-2016-6751', 'initialize the params array before using it', 3.1),

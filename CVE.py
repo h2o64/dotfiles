@@ -107,6 +107,8 @@ def get_cherry(cve_id):
 	else: pref = max(avail_ver)
 	for j in range(len(target_picks)):
 		if target_picks[j][0] == pref: num = j
+	blacklist = ["prima","wlan","qcacld","sock_setsockopt","bcmdhd"]
+	if any(x in target_picks[num][3] for x in blacklist): return "Blacklisted commit"
 	cmd = "git fetch ssh://h2o64@review.lineageos.org:29418/" + target_picks[num][1] + " " + target_picks[num][5] + " && git cherry-pick FETCH_HEAD # " + target_picks[num][3]
 	return cmd
 
