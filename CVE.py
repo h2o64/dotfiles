@@ -5,6 +5,7 @@ from CVE_DB import *
 from CVE_EXTRA import *
 
 CVE_EXTRA_KNOWN = [k[0] for k in CVE_DB_EXTRA]
+blacklist = ["prima","wlan","qcacld","sock_setsockopt","bcmdhd"]
 
 def most_common(lst):
     return max(set(lst), key=lst.count)
@@ -107,10 +108,65 @@ def get_cherry(cve_id):
 	else: pref = max(avail_ver)
 	for j in range(len(target_picks)):
 		if target_picks[j][0] == pref: num = j
-	blacklist = ["prima","wlan","qcacld","sock_setsockopt","bcmdhd"]
 	if any(x in target_picks[num][3] for x in blacklist): return "Blacklisted commit"
 	cmd = "git fetch ssh://h2o64@review.lineageos.org:29418/" + target_picks[num][1] + " " + target_picks[num][5] + " && git cherry-pick FETCH_HEAD # " + target_picks[num][3]
 	return cmd
+
+def get_cherry_mass(cve_id):
+	kernel = get_kernel_rev(sys.argv[2])
+	tmp = 'ssh -p 29418 h2o64@review.lineageos.org "gerrit query --current-patch-set status:merged ' + cve_id + '" | egrep "project:|subject:|branch:|revision:"'
+	data = os.popen(tmp).readlines()
+	# Make a commit struct
+	commits_list = []
+	j = 0
+	while j < len(data):
+		# Project
+		# Number
+		# Subject
+		# patchset (not used)
+		# ref
+		commits_list.append((data[j],data[j+1],data[j+2],data[j+3]))
+		j += 4
+	if commits_list == []: return ()
+	# Remove unwanted strings
+	for k in range(len(commits_list)):
+		project = (commits_list[k][0].replace("  project: ", "")).replace("\n","")
+		branch = (commits_list[k][1].replace("  branch: ", "")).replace("\n","")
+		subject = (commits_list[k][2].replace("  subject: ", "")).replace("\n","")
+		revision = (commits_list[k][3].replace("    revision: ", "")).replace("\n","")
+		commits_list[k] = (get_kernel_rev(project),project,branch,subject,revision)
+	sorted_list = quicksort(commits_list)
+	# Get best commit for each linux rev
+	best_sub = []
+	old_rev = sorted_list[0][0]
+	buf = []
+	for commit in sorted_list:
+		if commit == sorted_list[-1] and old_rev == commit[0]:
+			buf.append(commit[3])
+			best_sub.append((old_rev,most_common(buf)))
+		elif commit[0] != old_rev :
+			buf.append(commit[3])
+			best_sub.append((old_rev,most_common(buf)))
+			buf = []
+		else: buf.append(commit[3])
+		old_rev = commit[0]
+	# Convert back into larger data struct
+	target_picks = []
+	for goal in best_sub: # TODO: To optimize
+		for commit in sorted_list:
+			if (commit[0],commit[3]) == goal:
+				target_picks.append(commit)
+				break
+	# Select THE commit based on kernel rev
+	picked = target_picks[0]
+	avail_ver = [i[0] for i in target_picks]
+	if kernel in avail_ver: pref = kernel
+	elif kernel < min(avail_ver): return "No patch for this linux revision"
+	else: pref = max(avail_ver)
+	for j in range(len(target_picks)):
+		if target_picks[j][0] == pref: num = j
+	if any(x in target_picks[num][3] for x in blacklist): return ()
+	return target_picks[num]
 
 '''
 def multiprocess_cve(cve_list):
@@ -138,25 +194,37 @@ def is_Extra(cve_num):
 		if cve_num == i[0]: return True
 	return False
 
-def check_for_cve(folder, suggestions):
+def check_for_cve(folder, suggestions, mass):
 	log = set(os.popen('git --git-dir ' + folder + '/.git log --no-merges --since="2012-01-00" --pretty=oneline').readlines())
 	patched = []
 	kernel_rev = get_kernel_rev(folder)
+	mass_buf = [[],[]]
 	for commit in log:
 		for cve in CVE_DB + CVE_DB_EXTRA:
 			if cve[1] != "PYTHON-CVE : Commit not found" and kernel_rev >= cve[2] and cve[1] in commit[41:]:
-				print cve[0] + " patched"
+				if not mass: print cve[0] + " patched"
 				patched.append(cve[0])
 	for cve in CVE_DB + CVE_DB_EXTRA:
 		tmp = ''
-		if cve[0] not in patched:
-			if cve[1] == "PYTHON-CVE : Commit not found" and not is_Extra(cve[0]): print cve[0] + " commit not found"
+		if cve[0] not in patched and not any(x in cve[1] for x in blacklist):
+			if cve[1] == "PYTHON-CVE : Commit not found" and not is_Extra(cve[0]) and not mass: print cve[0] + " commit not found"
 			elif cve[1] != "PYTHON-CVE : Commit not found" and kernel_rev >= cve[2]:
 				if suggestions: print get_cherry(cve[0]) + ' # ' + cve[0]
+				elif mass:
+					data = get_cherry_mass(cve[0])
+					if data != ():
+						mass_buf[0].append((data[1],data[2]))
+						mass_buf[1].append((data[3],data[4],cve[0]))
 				else: print cve[0] + " unpatched"
+	if mass:
+		for repo in list(set(mass_buf[0])):
+			print "git fetch https://github.com/LineageOS/" + repo[0] + " " + repo[1]
+		for commit in mass_buf[1]:
+			print "git cherry-pick " + commit[1] + " # " + commit[0] + " | " + commit[2]
 
 if __name__ == '__main__':
 		if sys.argv[1] == "db" : all_cve(sys.argv[2])
-		elif sys.argv[1] == "check" : check_for_cve(sys.argv[2], False)
-		elif sys.argv[1] == "sug" : check_for_cve(sys.argv[2], True)
+		elif sys.argv[1] == "check" : check_for_cve(sys.argv[2], False, False)
+		elif sys.argv[1] == "sug" : check_for_cve(sys.argv[2], True, False)
+		elif sys.argv[1] == "sug-big" : check_for_cve(sys.argv[2], False, True)
 		else: print "Error wrong arguments"
