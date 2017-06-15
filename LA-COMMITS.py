@@ -167,12 +167,12 @@ def picks():
 				old_bool = False
 	if github_extra != ['']:
 		for github_c in github_list:
-			old_project,old_bool = isLA_ONLY(github_c[0].replace('/',''),old_project,old_bool)
+			#old_project,old_bool = isLA_ONLY(github_c[0].replace('/',''),old_project,old_bool)
 			old_cd = cd_print((github_c[0].replace('android_','').replace('proprietary_','').replace('_','/') + "\ngit fetch " + github_c[1] + ' ' + github_c[3]),old_cd)
 			print 'git cherry-pick ' + github_c[2]
-			if github_c == github_list[-1] and old_bool :
-				print 'fi'
-				old_bool = False
+			#if github_c == github_list[-1] and old_bool :
+			#	print 'fi'
+			#	old_bool = False
 	print 'cd $CURRENT_DIR'
 
 if __name__ == '__main__':
