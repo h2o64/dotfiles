@@ -13,23 +13,18 @@ target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini",
 "LineageOS/android_kernel_xiaomi_msm8996"]
 commit_blacklist = ['163950','163951','164088','165010']
-commit_blacklist += ['167063','167064','165605'] # xiaomi WIP srgb and dt2w
+commit_blacklist += ['167063','167064','165605','172016','171943','171614'] # xiaomi WIP srgb and dt2w
 gerrit_extra = ['']
 github_extra = [
-('h2o64/proprietary_vendor_yu/commit/e3e90ed7d939b2ef5d38a4ff25c45c3b19431b47','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/59d022573ecafefd885b02fecd6693e919faae3a','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/25bcc7b6e748a5a0baca0016c07c3174bf411a33','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/5d20a89a3d1fe00fc124e01aaa33e11ffd48a14a','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/6801787cc21c319b9c07aa67ed9cf308d662ceb1','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/9a70e44ad8a188fbd883f62256a379f0a8f069ef','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/eec8fb8ac3d0e52d14b2b513bb68231cc36ac087','cm-14.1-crackling'),
+('h2o64/proprietary_vendor_yu/commit/66173c7f8038fddb8ea3811bc19b3155a3ed880b','cm-14.1-crackling'),
+('h2o64/proprietary_vendor_yu/commit/325071eab92f328e498c2fa0b105832e90fe9a8b','cm-14.1-crackling'),
+('h2o64/proprietary_vendor_yu/commit/8ecd16306cfe52150fda33cfa91e25f1b947630b','cm-14.1-crackling'),
+('h2o64/proprietary_vendor_yu/commit/401b41ea47892e71611540150a0cabae96b729eb','cm-14.1-crackling'),
+('h2o64/proprietary_vendor_yu/commit/2655ce6120043f2ef3c225d7b686393517babf4f','cm-14.1-crackling'),
+('h2o64/proprietary_vendor_yu/commit/673ce7823581111769f32ef7d6cd89c896cc3b6a','cm-14.1-crackling'),
+('h2o64/proprietary_vendor_yu/commit/b6971e24e4f2f0a83980b6d340acd25f56160c0d','cm-14.1-crackling'),
 ('h2o64/proprietary_vendor_yu/commit/a20c4c81a4a898a58387078e724f8c097a35ea2c','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/a8072229c75bb43a3e04e7cec35b05d6493f3508','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/cf41f013f800f8c199be416ab385b6eda6e55dc0','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/908ec5eb18abba3bed21ae7253900129ebdd82a4','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/27ec6d1d5f505c4edbe6c26637e040dddf03654c','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/fff0d94fc7f165034cbaaeb98b50fe01a6a31112','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/49340d3c98c68ccef7da9c5d68a08953bfbdb280','cm-14.1-crackling')]
+('h2o64/proprietary_vendor_yu/commit/6952002fb5f3604644fe2ca0e54fe461a98e281c','cm-14.1-crackling')]
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
 
