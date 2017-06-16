@@ -14,7 +14,7 @@ target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_kernel_xiaomi_msm8996"]
 commit_blacklist = ['163950','163951','164088','165010']
 commit_blacklist += ['167063','167064','165605','172016','171943','171614'] # xiaomi WIP srgb and dt2w
-gerrit_extra = ['177185','177689','177690','177691','177692','177708']
+gerrit_extra = ['177185','177689','177690','177691','177708']
 github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/66173c7f8038fddb8ea3811bc19b3155a3ed880b','cm-14.1-crackling'),
 ('h2o64/proprietary_vendor_yu/commit/325071eab92f328e498c2fa0b105832e90fe9a8b','cm-14.1-crackling'),
