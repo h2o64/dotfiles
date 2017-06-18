@@ -199,11 +199,16 @@ def check_for_cve(folder, suggestions, mass):
 	patched = []
 	kernel_rev = get_kernel_rev(folder)
 	mass_buf = [[],[]]
+	garlic = ("yu" in folder) and ("msm8937" in folder)
 	for commit in log:
 		for cve in CVE_DB + CVE_DB_EXTRA:
 			if cve[1] != "PYTHON-CVE : Commit not found" and kernel_rev >= cve[2] and cve[1] in commit[41:]:
 				if not mass: print cve[0] + " patched"
 				patched.append(cve[0])
+	if garlic:
+		for cve in GARLIC_EXCEPTION:
+			print cve + " doesn't apply"
+			patched.append(cve)
 	for cve in CVE_DB + CVE_DB_EXTRA:
 		tmp = ''
 		if cve[0] not in patched and not any(x in cve[1] for x in blacklist):

@@ -13,10 +13,10 @@ CVE_DB_EXTRA = [
 ('CVE-2016-6739', 'Validate frame message before manipulating it',3.18),
 ('CVE-2016-8415', 'Fix hdd_ocb_config_new() signature',3.10),
 ('CVE-2016-8416', 'Clear compat structures before copying to user',3.18),
-('CVE-2016-8454', 'bcmdhd: fix overrun in dhd_pno_set_cfg_gscan'),
-('CVE-2016-8455', 'bcmdhd: Security V: memory overflow in wifi'),
-('CVE-2016-8456', 'bcmdhd: Fix up the BRCM wifi DHD code'),
-('CVE-2016-8457', 'bcmdhd: fix buffer overrun in anqpo config'),
+('CVE-2016-8454', 'bcmdhd: fix overrun in dhd_pno_set_cfg_gscan',3.10),
+('CVE-2016-8455', 'bcmdhd: Security V: memory overflow in wifi',3.10),
+('CVE-2016-8456', 'bcmdhd: Fix up the BRCM wifi DHD code',3.10),
+('CVE-2016-8457', 'bcmdhd: fix buffer overrun in anqpo config',3.10),
 ('CVE-2016-8463', 'Add replacment for CMA pages into the LRU cache',3.04),
 ('CVE-2016-8478', 'Clear compat structures before copying to user',3.18),
 ('CVE-2016-10154', 'Fix smbencrypt() to stop pointing a scatterlist at the stack',4.9),
@@ -64,3 +64,6 @@ CVE_DB_EXTRA = [
 ('CVE-2017-8240', 'Fix bug in iteration through functions',3.18),
 ('LVT-2017-0001', 'Only expose su when daemon is running',3.04)
 ]
+
+GARLIC_EXCEPTION = ['CVE-2014-4323','CVE-2014-7822','CVE-2015-0569','CVE-2015-0571','CVE-2015-1805','CVE-2015-8575','CVE-2015-8830','CVE-2016-0774','CVE-2016-0805','CVE-2016-10153','CVE-2016-10233','CVE-2016-10235','CVE-2016-10283','CVE-2016-10286','CVE-2016-2465','CVE-2016-2468','CVE-2016-2469','CVE-2016-2475','CVE-2016-3768','CVE-2016-3934','CVE-2016-5829','CVE-2016-6748','CVE-2016-8434','CVE-2016-8452','CVE-2016-8453','CVE-2016-9576','CVE-2017-0452','CVE-2017-0461','CVE-2017-0464','CVE-2017-0536','CVE-2017-0583','CVE-2017-0632','CVE-2017-0650','CVE-2017-6424','CVE-2017-7371','CVE-2017-7374','CVE-2017-8239','CVE-2017-8241','CVE-2017-8246','CVE-2015-0570','CVE-2016-2474','CVE-2016-8415','CVE-2017-0433','CVE-2017-0437','CVE-2017-0438','CVE-2017-0439','CVE-2017-0440','CVE-2017-0441','CVE-2017-0442','CVE-2017-0443','CVE-2017-0444','CVE-2017-0445','CVE-2017-0446','CVE-2017-0447','CVE-2017-0535','CVE-2017-0619','CVE-2017-0648','CVE-2017-0651','CVE-2017-7364','CVE-2017-8234']
+
