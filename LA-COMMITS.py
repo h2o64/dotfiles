@@ -25,7 +25,7 @@ github_extra = [
 ('h2o64/proprietary_vendor_yu/commit/b6971e24e4f2f0a83980b6d340acd25f56160c0d','cm-14.1-crackling'),
 ('h2o64/proprietary_vendor_yu/commit/a20c4c81a4a898a58387078e724f8c097a35ea2c','cm-14.1-crackling'),
 ('h2o64/proprietary_vendor_yu/commit/6952002fb5f3604644fe2ca0e54fe461a98e281c','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/c42e6748e089859f9f652118e63ae6e150094033','cm-14.1-crackling')]
+('h2o64/proprietary_vendor_yu/commit/a1c82791d0865ee0600bbf5c60b78353300874ba','cm-14.1-crackling')]
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
 
