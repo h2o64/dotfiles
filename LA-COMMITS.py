@@ -13,19 +13,10 @@ target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini",
 "LineageOS/android_kernel_xiaomi_msm8996"]
 commit_blacklist = ['163950','163951','164088','165010']
-commit_blacklist += ['167063','167064','165605','172016','171943','171614'] # xiaomi WIP srgb and dt2w
+commit_blacklist += ['167063','167064','165605','172016','171943','171614','167062','177764'] # xiaomi WIP srgb and dt2w
+commit_blacklist += ['178211','177854'] # CNE/DPM
 gerrit_extra = ['177185','177689','177690','177691','177708','177729']
-github_extra = [
-('h2o64/proprietary_vendor_yu/commit/66173c7f8038fddb8ea3811bc19b3155a3ed880b','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/325071eab92f328e498c2fa0b105832e90fe9a8b','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/8ecd16306cfe52150fda33cfa91e25f1b947630b','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/401b41ea47892e71611540150a0cabae96b729eb','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/2655ce6120043f2ef3c225d7b686393517babf4f','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/673ce7823581111769f32ef7d6cd89c896cc3b6a','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/b6971e24e4f2f0a83980b6d340acd25f56160c0d','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/a20c4c81a4a898a58387078e724f8c097a35ea2c','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/6952002fb5f3604644fe2ca0e54fe461a98e281c','cm-14.1-crackling'),
-('h2o64/proprietary_vendor_yu/commit/a1c82791d0865ee0600bbf5c60b78353300874ba','cm-14.1-crackling')]
+github_extra = []
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
 
