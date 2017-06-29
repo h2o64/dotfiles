@@ -5,7 +5,6 @@ import copy
 
 curl = 'ssh -p 29418 h2o64@review.lineageos.org gerrit query --current-patch-set status:open owner:"theh2o64@gmail.com" | egrep "project:|number:|subject:|lastUpdated:|ref:"'
 target = ["LineageOS/android_device_cyanogen_msm8916-common",
-"LineageOS/android_kernel_cyanogen_msm8916",
 "LineageOS/android_device_yu_tomato",
 "LineageOS/android_device_yu_lettuce",
 "LineageOS/android_device_yu_jalebi"]

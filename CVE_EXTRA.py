@@ -60,7 +60,7 @@ CVE_DB_EXTRA = [
 ('CVE-2016-8457', 'bcmdhd: fix buffer overrun in anqpo config',3.10),
 ('CVE-2016-8463', 'Add replacment for CMA pages into the LRU cache',3.04),
 ('CVE-2016-8464', 'bcmdhd: fix buffer overrun in private command path',3.10),
-('CVE-2016-8465', 'bcmdhd: fix buffer overrun in wl_cfgvendor_hotlist_cfg'),
+('CVE-2016-8465', 'bcmdhd: fix buffer overrun in wl_cfgvendor_hotlist_cfg',3.1),
 ('CVE-2016-8466', 'bcmdhd: fix hotlist index in wl_cfgvendor_hotlist_cfg',3.1),
 ('CVE-2016-8468', 'binder: check set_context_mgr permission on time',3.18),
 ('CVE-2016-8473', 'ldaf: Initialize buffers before use',3.10),
