@@ -11,10 +11,9 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini",
 "LineageOS/android_kernel_xiaomi_msm8996"]
-commit_blacklist = ['163950','163951','164088','165010']
-commit_blacklist += ['167063','167064','165605','172016','171943','171614','167062','177764'] # xiaomi WIP srgb and dt2w
-commit_blacklist += ['178211','177854'] # CNE/DPM
-gerrit_extra = ['177185','177689','177690','177691','177708','177729']
+commit_blacklist = ['165010','177854','178211']
+commit_blacklist += ['167063','167064','172016','171943','171614','167062','177764'] # xiaomi WIP srgb and dt2w
+gerrit_extra = ['180256','180257','180255']
 github_extra = []
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
