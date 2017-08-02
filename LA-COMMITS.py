@@ -13,6 +13,7 @@ target_open = ["LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_kernel_xiaomi_msm8996"]
 commit_blacklist = ['165010','177854','178211']
 commit_blacklist += ['167063','167064','172016','171943','171614','167062','177764'] # xiaomi WIP srgb and dt2w
+commit_blacklist += ['178189','181121','181132'] # xiaomi NFC
 gerrit_extra = ['180256','180257','180255','181963']
 github_extra = []
 #sumbit_command = 'gerrit review --code-review +1'
