@@ -15,6 +15,7 @@ commit_blacklist = ['165010','177854','178211']
 commit_blacklist += ['167063','167064','172016','171943','171614','167062','177764'] # xiaomi WIP srgb and dt2w
 commit_blacklist += ['178189','181121','181132'] # xiaomi NFC
 gerrit_extra = ['180256','180257','180255','181963']
+gerrit_extra += ['182778','183078','183079','183080','183081','182980','182981']
 github_extra = []
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
