@@ -10,9 +10,28 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 "LineageOS/android_device_xiaomi_msm8996-common",
 "LineageOS/android_device_xiaomi_gemini",
 "LineageOS/android_kernel_xiaomi_msm8996"]
-commit_blacklist = ['']
+
+# Blacklist
+commit_blacklist = ['166134'] # 8916-common: LineageDoze
+commit_blacklist += ['178189'] # gemini: NXP NFC Config
+commit_blacklist += ['167062','167063','167064'] # xiaomi: sRGB
+commit_blacklist += ['165010','175706'] # xiaomi : Network mode
+commit_blacklist += ['181121','181132'] # xiaomi : AOSP NFC
+commit_blacklist += ['177764'] # xiaomi : SVELTE
+commit_blacklist += ['183033'] # xiaomi : EAP
+commit_blacklist += ['172543'] # xiaomi : CGroup RT Bandwith (broken)
+commit_blacklist += ['160575'] # jalebi: LCD Hooks (thermal)
+commit_blacklist += ['178216'] # lettuce : CNE/DPM
+commit_blacklist += ['170873','170878','170879','170880','172113','170876','170877','170874','170875','182882','182883'] # tomato : VoLTE
+commit_blacklist += ['177854'] # tomato: CNE/DPM
+
+# Gerrit extra commits
 gerrit_extra = ['']
+
+# Github extra commits
 github_extra = []
+
+# Sumbmit command
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
 
