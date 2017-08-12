@@ -24,6 +24,7 @@ commit_blacklist += ['160575'] # jalebi: LCD Hooks (thermal)
 commit_blacklist += ['178216'] # lettuce : CNE/DPM
 commit_blacklist += ['170873','170878','170879','170880','172113','170876','170877','170874','170875','182882','182883'] # tomato : VoLTE
 commit_blacklist += ['177854'] # tomato: CNE/DPM
+commit_blacklist += ['180232','181606'] # xiaomi_kernel : Temporary blacklist (I fucked up)
 
 # Gerrit extra commits
 gerrit_extra = []
