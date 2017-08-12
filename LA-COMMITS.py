@@ -62,8 +62,14 @@ def quicksort(t):
 				t2.append(x)
 	return quicksort(t1)+[pivot]+quicksort(t2)
 
+def genBlacklist():
+	ret = ''
+	for i in commit_blacklist:
+		ret += '-change:' + i + ' '
+	return ret
+
 def curlRepo(name):
-			curl = 'ssh -p 29418 h2o64@review.lineageos.org gerrit query --current-patch-set status:open ' + name + ' | egrep "project:|number:|subject:|lastUpdated:|ref:"'
+			curl = 'ssh -p 29418 h2o64@review.lineageos.org gerrit query --current-patch-set -- status:open ' + genBlacklist() + name + ' | egrep "project:|number:|subject:|lastUpdated:|ref:"'
 			return os.popen(curl).readlines()
 
 # Detects which commits is the bitch
@@ -110,7 +116,6 @@ def gather():
 		buf = []
 		for k in range(len(commits_list)):
 			number = commits_list[k][1].replace("  number: ", "")
-			if number in commit_blacklist: continue # Apply a blacklist
 			project = commits_list[k][0].replace("  project: ", "")
 			updated = commits_list[k][3].replace("  lastUpdated: ", "")
 			subject = commits_list[k][2].replace("  subject: ", "")
