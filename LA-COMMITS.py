@@ -26,7 +26,7 @@ commit_blacklist += ['170873','170878','170879','170880','172113','170876','1708
 commit_blacklist += ['177854'] # tomato: CNE/DPM
 
 # Gerrit extra commits
-gerrit_extra = ['']
+gerrit_extra = []
 
 # Github extra commits
 github_extra = []
@@ -90,7 +90,7 @@ def gather():
 		# Get personnal misc commits
 		data += curlRepo('owner:"theh2o64@gmail.com"')
 		# Download extra commits
-		if gerrit_extra != ['']:
+		if gerrit_extra != []:
 			for extra in gerrit_extra: data += curlRepo('change:' + extra)
 		# Make a commit struct
 		commits_list = makeCommitList(data,6)
