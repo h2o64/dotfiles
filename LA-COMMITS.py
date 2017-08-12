@@ -65,6 +65,16 @@ def curlRepo(name):
 			curl = 'ssh -p 29418 h2o64@review.lineageos.org gerrit query --current-patch-set status:open ' + name + ' | egrep "project:|number:|subject:|lastUpdated:|ref:"'
 			return os.popen(curl).readlines()
 
+# Detects which commits is the bitch
+def sanitizer(data,mod):
+	i = 0
+	while i < len(data):
+		if not "project" in data[i]:
+			for j in range(i-2*mod,i+2*mod):
+				print str(j) + " | " + str(j%mod) + " # " + data[j][:-1]
+			return
+		i += 6
+
 def makeCommitList(data,mod):
 	commit_list = []
 	n = len(data)
@@ -73,6 +83,7 @@ def makeCommitList(data,mod):
 	# Error check
 	if n%mod != 0:
 		print "Error in data lenght"
+		sanitizer(data,mod)
 		return
 	while i != n:
 		if i%mod == 0:
