@@ -5,7 +5,7 @@ from CVE_DB import *
 from CVE_EXTRA import *
 
 CVE_EXTRA_KNOWN = [k[0] for k in CVE_DB_EXTRA]
-blacklist = ["prima","wlan","qcacld","sock_setsockopt","bcmdhd"]
+blacklist = ["prima","wlan","qcacld","sock_setsockopt","bcmdhd","flounder","fix CVE-2016-8474"]
 
 def most_common(lst):
     return max(set(lst), key=lst.count)
@@ -29,6 +29,9 @@ def commit_subj_short(string):
 		if string[i] == ":": return string[i+2:]
 		if i == 0: return string
 	'''
+	remove_list = ['[media] ','UPSTREAM: ','BACKPORT: ']
+	for i in remove_list:
+		string = string.replace(i,"")
 	return string # Don't cut it anymore
 
 def get_kernel_rev(target):
