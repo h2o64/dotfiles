@@ -24,9 +24,12 @@ def quicksort(t):
 	return quicksort(t1)+[pivot]+quicksort(t2)
 
 def commit_subj_short(string):
+	'''
 	for i in reversed(range(len(string))):
 		if string[i] == ":": return string[i+2:]
 		if i == 0: return string
+	'''
+	return string # Don't cut it anymore
 
 def get_kernel_rev(target):
 	v1 = ["8974","8226","8960","exynos","8x60","klte","google_msm","8930","hammerhead","mako"]
