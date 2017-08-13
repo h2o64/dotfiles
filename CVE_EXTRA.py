@@ -44,6 +44,7 @@ CVE_DB_EXTRA = [
 ('CVE-2015-8939', 'validate input args of mdp4_argc_process_write_req',3.1),
 ('CVE-2015-8941', 'isp: fix array index bound checks',3.1),
 ('CVE-2015-8943', 'Unmap only when buffer was mapped',3.04),
+('CVE-2015-8961', 'ext4: fix potential use after free in __ext4_journal_stop', 3.1),
 ('CVE-2016-2062', 'Cast perfcounter query count to an unsigned int',3.18),
 ('CVE-2016-2474', 'Validate CCXBEACONREQ IE fields',3.1),
 ('CVE-2016-5349', 'support whitelist memory for qseecom_send_modfd_cmd',3.18),
@@ -52,6 +53,8 @@ CVE_DB_EXTRA = [
 ('CVE-2016-5862', 'Fix kernel crash in "Speaker Function" mixer control',4.4),
 ('CVE-2016-5864', 'check userspace buffer size in write()',4.4),
 ('CVE-2016-6739', 'Validate frame message before manipulating it',3.18),
+('CVE-2016-8406', 'usb: Avoid exposing kernel addresses', 3.1),
+('CVE-2016-8407', 'usb: Avoid exposing kernel addresses', 3.1),
 ('CVE-2016-8415', 'Fix hdd_ocb_config_new() signature',3.10),
 ('CVE-2016-8416', 'Clear compat structures before copying to user',3.18),
 ('CVE-2016-8454', 'bcmdhd: fix overrun in dhd_pno_set_cfg_gscan',3.10),
@@ -67,9 +70,11 @@ CVE_DB_EXTRA = [
 ('CVE-2016-8474', 'ldaf: Initialize buffers before use',3.10),
 ('CVE-2016-8475', 'HTC: input: misc: fix security vulnerability',3.18),
 ('CVE-2016-8478', 'Clear compat structures before copying to user',3.18),
+('CVE-2016-9120', 'ion: Fix use after free during ION_IOC_ALLOC', 3.1),
 ('CVE-2016-10154', 'Fix smbencrypt() to stop pointing a scatterlist at the stack',4.9),
 ('CVE-2016-10231', 'Fix out of bounds for mad input value',3.18),
 ('CVE-2016-10236', 'Avoid copying uninitialized data to userspace',3.18),
+('CVE-2016-10291', 'slim-msm : Synchronize SSR callbacks', 3.1),
 ('CVE-2016-10293', 'Add debugfs support for panel command data type',3.10),
 ('CVE-2016-10296', 'fix potential use after free issue when accessing debug_buffer',3.18),
 ('CVE-2017-0433', 'synaptics: remove sysfs',3.18),
@@ -94,6 +99,7 @@ CVE_DB_EXTRA = [
 ('CVE-2017-0534', 'Clear compat structures before copying to user',3.18),
 ('CVE-2017-0535', 'limit set mode call to MAX_REG_DATA',3.10),
 ('CVE-2017-0537', 'CHROMIUM: usb: gadget: configfs: Fix KASAN use-after-free',3.04),
+('CVE-2017-0611', 'ASoC: soc: prevent risk of buffer overflow', 3.1),
 ('CVE-2017-0612', 'added validation of input/output buffer sizes',3.18),
 ('CVE-2017-0619', 'fix function name allocation length',3.14),
 ('CVE-2017-0629', 'Validate i2c_frq_mode in msm_cci_get_clk_rates',4.4),
@@ -112,13 +118,14 @@ CVE_DB_EXTRA = [
 ('CVE-2017-8234', 'Add out of boundary check',3.10),
 ('CVE-2017-8235', 'Synchronize jpeg ISR and userspace call',3.18),
 ('CVE-2017-8240', 'Fix bug in iteration through functions',3.18),
-('LVT-2017-0001', 'Only expose su when daemon is running',3.04),
 ('CVE-2017-8257', 'Add mutex lock for debug buffer access in rotator',4.4),
 ('CVE-2017-8259', 'Avoid possible buffer overflow in service-locator',4.4),
 ('CVE-2017-8261', 'Fix kernel overwrite GET_BUF_BY_IDX ioctl',3.18),
 ('CVE-2017-8266', 'fix race condition during mdp debugfs release',3.18),
 ('CVE-2017-8268', 'Fix out-of-bounds frame or command buffer access',3.1)
+('LVT-2017-0001', 'Only expose su when daemon is running',3.04),
+('CVE-2017-8246', 'ASoC : msm: qdsp6v2: set pointer to NULL after free.', 3.1),
+('CVE-2017-8269', 'msm: rmnet_ipa: fix memory overflow issue', 3.1),
 ]
 
 GARLIC_EXCEPTION = []
-

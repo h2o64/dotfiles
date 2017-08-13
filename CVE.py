@@ -35,7 +35,7 @@ def commit_subj_short(string):
 	return string # Don't cut it anymore
 
 def get_kernel_rev(target):
-	v1 = ["8974","8226","8960","exynos","8x60","klte","google_msm","8930","hammerhead","mako"]
+	v1 = ["8974","8226","8960","exynos","8x60","klte","google_msm","8930","hammerhead","mako","gts2"]
 	v3 = ["8996","8937","8953"]
 	if any(x in target for x in v3): return 3.18
 	elif any(x in target for x in v1): return 3.04
@@ -83,7 +83,7 @@ def get_cherry(cve_id):
 		subject = (commits_list[k][2].replace("  subject: ", "")).replace("\n","")
 		patchset = (commits_list[k][3].replace("    number: ", "")).replace("\n","")
 		ref = (commits_list[k][4].replace("    ref: ", "")).replace("\n","")
-		commits_list[k] = (get_kernel_rev(project),project,number,subject,patchset,ref)
+		commits_list[k] = (get_kernel_rev(project),project,number,commit_subj_short(subject),patchset,ref)
 	sorted_list = quicksort(commits_list)
 	# Get best commit for each linux rev
 	best_sub = []
