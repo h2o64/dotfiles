@@ -150,6 +150,9 @@ CVE_DB_EXTRA = [
 ('CVE-2017-9680', 'qbt1000: Initialize drvdata structure before usage',3.18),
 ('CVE-2017-9692', 'msm: mdss: Fix potential dereferencing of null pointer',3.18),
 ('LVT-2017-0001', 'Only expose su when daemon is running',3.04),
+('CVE-2016-8481', 'drivers: qcom: ultrasound: Lock async driver calls', 3.1),
+('CVE-2016-2469', 'ASoC: msm: qdsp6v2: DAP: Fix unprotected userspace access', 3.1),
+('CVE-2016-2469', 'ASoC: msm: qdsp6v2: DAP: Fix buffer overflow', 3.18),
 ]
 
 GARLIC_EXCEPTION = []
