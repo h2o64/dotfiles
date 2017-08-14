@@ -172,7 +172,7 @@ def check_for_cve(folder, suggestions, mass):
 	kernel_rev = get_kernel_rev(folder)
 	mass_buf = [[],[]]
 	garlic = ("yu" in folder) and ("msm8937" in folder)
-	cygn_8916 = ("cyanogen" in folder) and ("msm8916" in folder)
+	cygn_8916 = (("cyanogen" in folder) or ("qcom" in folder)) and ("msm8916" in folder)
 	for commit in log:
 		for cve in CVE_DB + CVE_DB_EXTRA:
 			if cve[1] != "PYTHON-CVE : Commit not found" and kernel_rev >= cve[2] and cve[1] in commit[41:]:
