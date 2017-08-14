@@ -5,7 +5,8 @@ from CVE_DB import *
 from CVE_EXTRA import *
 
 CVE_EXTRA_KNOWN = [k[0] for k in CVE_DB_EXTRA]
-blacklist = ["prima","wlan","qcacld","sock_setsockopt","bcmdhd","flounder","fix CVE-2016-8474"]
+#blacklist = ["prima","wlan","qcacld","sock_setsockopt","bcmdhd","flounder","fix CVE-2016-8474","mediatek"]
+blacklist = []
 
 def most_common(lst):
     return max(set(lst), key=lst.count)
