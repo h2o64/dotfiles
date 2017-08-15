@@ -14,7 +14,6 @@ target = ["LineageOS/android_device_cyanogen_msm8916-common",
 # Blacklist
 commit_blacklist = ['166134'] # 8916-common: LineageDoze
 commit_blacklist += ['178189'] # gemini: NXP NFC Config
-commit_blacklist += ['167062','167063','167064'] # xiaomi: sRGB
 commit_blacklist += ['165010','175706'] # xiaomi : Network mode
 commit_blacklist += ['181121','181132'] # xiaomi : AOSP NFC
 commit_blacklist += ['177764'] # xiaomi : SVELTE
@@ -25,7 +24,7 @@ commit_blacklist += ['178211'] # lettuce : CNE/DPM
 commit_blacklist += ['170873','170878','170879','170880','172113','170876','170877','170874','170875','182882','182883'] # tomato : VoLTE
 commit_blacklist += ['177854'] # tomato: CNE/DPM
 commit_blacklist += ['180232','181606'] # xiaomi_kernel : Temporary blacklist (I fucked up)
-
+commit_blacklist += ['184884'] # xiaomi_kernel : CNSS False leak
 # Gerrit extra commits
 gerrit_extra = []
 
