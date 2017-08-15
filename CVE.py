@@ -167,7 +167,7 @@ def is_Extra(cve_num):
 	return False
 
 def check_for_cve(folder, suggestions, mass):
-	log = set(os.popen('git --git-dir ' + folder + '/.git log --no-merges --since="2012-01-00" --pretty=oneline').readlines())
+	log = list(set(os.popen('git --git-dir ' + folder + '/.git log --no-merges --since="2012-01-00" --pretty=oneline').readlines()))
 	patched = []
 	kernel_rev = get_kernel_rev(folder)
 	mass_buf = [[],[]]
