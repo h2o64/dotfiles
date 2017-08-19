@@ -25,6 +25,8 @@ commit_blacklist += ['170873','170878','170879','170880','172113','170876','1708
 commit_blacklist += ['177854'] # tomato: CNE/DPM
 commit_blacklist += ['180232','181606'] # xiaomi_kernel : Temporary blacklist (I fucked up)
 commit_blacklist += ['184884'] # xiaomi_kernel : CNSS False leak
+commit_blacklist += ['185183'] # xiaomi_kernel: Don't use Linux 3.18.32
+
 # Gerrit extra commits
 gerrit_extra = []
 
