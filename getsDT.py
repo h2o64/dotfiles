@@ -1,7 +1,7 @@
 import os
 
-# Xiaomi Panels
-xiaomi_panels = [
+# Xiaomi DTs
+xiaomi_dt = [
 'qcom,mdss_dsi_auo_fte716_1080p_video',
 'qcom,mdss_dsi_jdi_fhd_r63452_cmd',
 'qcom,mdss_dsi_jdi_fhd_r63452_j1_cmd',
@@ -18,16 +18,28 @@ xiaomi_panels = [
 'qcom,mdss_dsi_sharp_fhd_nt35695_cmd',
 'qcom,mdss_dsi_sharp_fhd_nt35695_video',
 'qcom,mdss_dsi_sharp_fhd_td4722_xcmd',
-'qcom,mdss_dsi_sharp_fte716_1080p_video']
+'qcom,mdss_dsi_sharp_fte716_1080p_video',
+'qcom,capricorn_atl',
+'qcom,capricorn_sdi',
+'qcom,a1_atl_3000mah',
+'qcom,a1_sdi_3000mah',
+'qcom,a8_atl',
+'qcom,natrium_atl_3840mah',
+'qcom,b7_lg_3840mah',
+'qcom,a4_atl',
+'qcom,scorpio_coslight']
 
-# Get panel number
-def getPanelNum(panel):
-	for x in range(len(xiaomi_panels)):
-		if panel in xiaomi_panels[x]: return x
-	# print "Panel num can't be found : " + panel
+hex_blacklist = ['qcom,mdss-dsi-underflow-color','qcom,mdss-dsi-t-clk-post','qcom,mdss-dsi-t-clk-pre','qcom,mdss-dsi-wr-mem-start','qcom,mdss-dsi-wr-mem-continue','qcom,chg-rslow-comp-thr','qcom,checksum']
+blacklist = ["phandle","qcom,config-select","qcom,mdss-dsi-displayo","qcom,mdss-night-brightness","qcom,panel-supply-entries","qcom,mdss-dsi-panel-model","qcom,video-panel-esd-te-check","qcom,mdss-panel-on-dimming-delay","qcom,esd-err-irq-gpio",'qcom,mdss-dsi-dispparam-cabcguion-command','qcom,mdss-dsi-dispparam-cabcmovieon-command','qcom,mdss-dsi-dispparam-cabcstillon-command', 'qcom,mdss-dsi-dispparam-srgb-command-state']
+
+# Get dt number
+def getDTNum(dt):
+	for x in range(len(xiaomi_dt)):
+		if dt in xiaomi_dt[x]: return x
+	# print "DT num can't be found : " + dt
 
 # Convert their wierd format
-def hexToDec(hexa):
+def hexToDec(hexa, battery):
 	raw_buf = ''
 	# Make each hex 10 characters longs
 	for i in hexa:
@@ -41,16 +53,18 @@ def hexToDec(hexa):
 	for k in range(len(tmp)):
 		if k%2 == 0: buf += " "
 		buf += tmp[k]
-	return indentBytes(buf[1:])
+	return indentBytes(buf[1:], battery)
 
 # Make indentation
-def indentBytes(string):
+def indentBytes(string, battery):
 	# Add `\t` and `\n`
 	buf = ''
 	started = False
 	count = 0
+	if battery: limit = 4
+	else: limit = 9
 	for j in range(len(string)):
-		if count == 9:
+		if count == limit:
 			buf += "\n\t\t\t\t"
 			count = 0
 		buf += string[j]
@@ -85,16 +99,18 @@ def formatReset(string):
 
 # Indentify and convert to right format
 def convertToDecimal(entry):
-	hex_blacklist = ['qcom,mdss-dsi-underflow-color','qcom,mdss-dsi-t-clk-post','qcom,mdss-dsi-t-clk-pre','qcom,mdss-dsi-wr-mem-start','qcom,mdss-dsi-wr-mem-continue']
 	# Empty value
 	if (entry[1] == ''): return "\t\t" + entry[0]
 	# Regular string || Display ON/OFF CMD
 	elif ('"' in entry[1]) or ('[' in entry[1]) or (entry[0] in hex_blacklist): return "\t\t" + entry[0] + " = " + entry[1]
 	# HEX-ed display CMD/Timing
-	elif ("-command" in entry[0]) or ("-cmd" in entry[0]) or ("-timings" in entry[0]):
+	elif ("-command" in entry[0]) or ("-cmd" in entry[0]) or ("-timings" in entry[0]) or ("fg-profile-data" in entry[0]):
 		values = getValues(entry[1])
 		buf = "\t\t" + entry[0] + ' = [\n\t\t\t\t'
-		buf += hexToDec(values)
+		if not "fg-profile-data" in entry[0]:
+			buf += hexToDec(values, False)
+		else:
+			buf += hexToDec(values, True)
 		return buf + '];'
 	# Reset sequence
 	elif ("qcom,mdss-dsi-reset-sequence" in entry[0]):
@@ -110,9 +126,8 @@ def convertToDecimal(entry):
 dt_miui_files = os.popen('find DTS/ -follow -type f | grep "dts"').readlines()
 dt_la_files = os.popen('find DTS_LA/ -follow -type f | grep "dts"').readlines()
 
-# Get panel name (qcom,*)
-panel_entry = 'qcom,mdss_dsi_'
-def getPanelName(string):
+# Get dt name (qcom,*)
+def getDTName(string):
 	for i in range(len(string)):
 		if string[i] == ',': return string[i-4:-3]
 
@@ -151,49 +166,48 @@ def replaceName(name):
 		return tmp.replace(old_cabc_off,new_cabc_off)
 	else: return name
 
-# Make the panel recap struct
-def getPanelStruct(files):
-	panel_seen = []
-	ret = [x for x in range(len(xiaomi_panels))]
-	blacklist = ["phandle","qcom,config-select","qcom,mdss-dsi-displayo","qcom,mdss-night-brightness","qcom,panel-supply-entries","qcom,mdss-dsi-panel-model","qcom,video-panel-esd-te-check","qcom,mdss-panel-on-dimming-delay","qcom,esd-err-irq-gpio"]
+# Make the dt recap struct
+def getDTStruct(files):
+	dt_seen = []
+	ret = [x for x in range(len(xiaomi_dt))]
 	for dt_file in files:
-		cur_dt = open(dt_file[:-1])
-		lines = cur_dt.readlines()
-		cur_panel_seen = []
-		cur_panel_buf = []
-		cur_panel = -1
-		panel_bool = False
+		cur_file = open(dt_file[:-1])
+		lines = cur_file.readlines()
+		cur_dt_seen = []
+		cur_dt_buf = []
+		cur_dt = -1
+		dt_bool = False
 		for line in lines:
-			if panel_bool and ("}" in line): # Reset all panel data
-				ret[cur_panel] = cur_panel_buf # Push buf to main struct
-				cur_panel_seen = []
-				cur_panel_buf = []
-				cur_panel = -1
-				panel_bool = False
-			if (panel_entry in line) and ('{' in line) and ("@" not in line) and (getPanelName(line) not in panel_seen): # Get cur panel
-				tmp = getPanelName(line)
-				if tmp in xiaomi_panels:
-					panel_bool = True
-					cur_panel = getPanelNum(tmp)
-				panel_seen.append(tmp)
-			elif (cur_panel != -1) and (panel_bool) and not any(x in line for x in blacklist): # Add entry
+			if dt_bool and ("}" in line): # Reset all dt data
+				ret[cur_dt] = cur_dt_buf # Push buf to main struct
+				cur_dt_seen = []
+				cur_dt_buf = []
+				cur_dt = -1
+				dt_bool = False
+			if any(x in line for x in xiaomi_dt) and ('{' in line) and ("@" not in line) and (getDTName(line) not in dt_seen): # Get cur dt
+				tmp = getDTName(line)
+				if tmp in xiaomi_dt:
+					dt_bool = True
+					cur_dt = getDTNum(tmp)
+				dt_seen.append(tmp)
+			elif (cur_dt != -1) and (dt_bool) and not any(x in line for x in blacklist): # Add entry
 				if not any(x in line for x in ["cabc","srgb"]) and any(x in line for x in ["dispparam"]): continue
 				tmp = getEntryTuple(line)
-				if tmp[0] not in cur_panel_seen:
-					cur_panel_buf.append((replaceName(tmp[0]).replace("\t",""),tmp[1]))
-					cur_panel_seen.append(tmp[0])
-		cur_dt.close()
+				if tmp[0] not in cur_dt_seen:
+					cur_dt_buf.append((replaceName(tmp[0]).replace("\t",""),tmp[1]))
+					cur_dt_seen.append(tmp[0])
+		cur_file.close()
 	return ret
 
-# Get panels in a struct
-def getPanelsInStruct(struct, ind):
+# Get dt in a struct
+def getDTsInStruct(struct, ind):
 	for i in struct[ind]:
-		if "qcom,mdss-dsi-panel-name" in i[0]: print i
+		if "qcom,mdss-dsi-dt-name" in i[0]: print i
 
 # Print the structure
-def printPanelStruct(struct):
+def printDTStruct(struct):
 	for i in range(len(struct)):
-		print "******* Panel = " + xiaomi_panels[i] + " *******"
+		print "******* DT = " + xiaomi_dt[i] + " *******"
 		for j in struct[i]:
 			print convertToDecimal(j)
 
@@ -206,10 +220,10 @@ def printVerticaly(liste):
 			print i
 
 # Get the sRGB OFF command
-def getsRGBOff(panel,struct):
+def getsRGBOff(dt,struct):
 	on_cmd = 'qcom,mdss-dsi-on-command'
 	cmd = '\t\tcm,mdss-livedisplay-srgb-off-cmd = [\n\t\t\t\t'
-	for i in struct[panel]:
+	for i in struct[dt]:
 		if ("qcom,mdss-dsi-on-command" in i[0]) and ("state" not in i[0]): # We don't want state
 			buf = i
 			break
@@ -218,14 +232,13 @@ def getsRGBOff(panel,struct):
 	return cmd
 
 # Returns if value exists
-def isInStruct(panel,struct,entry):
-		for i in struct[panel]:
+def isInStruct(dt,struct,entry):
+		for i in struct[dt]:
 			if entry in i[0]: return True
 		return False
 
 # Compare struct (struct1..struct2 with git syntax)
-def comparePanelStruct(struct1,struct2):
-	blacklist = ['qcom,mdss-dsi-dispparam-cabcguion-command','qcom,mdss-dsi-dispparam-cabcmovieon-command','qcom,mdss-dsi-dispparam-cabcstillon-command', 'qcom,mdss-dsi-dispparam-srgb-command-state']
+def compareDTStruct(struct1,struct2):
 	cabc_ui = "cm,mdss-livedisplay-cabc-ui-value"
 	cabc_image = "cm,mdss-livedisplay-cabc-image-value"
 	cabc_video = "cm,mdss-livedisplay-cabc-video-value"
@@ -244,7 +257,7 @@ def comparePanelStruct(struct1,struct2):
 			if not any(x in j[0] for x in blacklist):
 					chk_diff_changed.append(j)
 		if chk_diff_changed != []:
-			print " **** Panel = " + xiaomi_panels[i] + " *****"
+			print " **** DT = " + xiaomi_dt[i] + " *****"
 			print "Changed/Missing"
 			if not isInStruct(i,struct1,cabc_ui): print "\t\t" + cabc_ui + '= <0x01>;'
 			if not isInStruct(i,struct1,cabc_image): print "\t\t" + cabc_image + '= <0x02>;'
@@ -253,6 +266,6 @@ def comparePanelStruct(struct1,struct2):
 				if not isInStruct(i,struct1,"cm,mdss-livedisplay-srgb-off-cmd"): print getsRGBOff(i,struct1)
 			printVerticaly(chk_diff_changed)
 
-miui_struct = getPanelStruct(dt_miui_files)
-la_struct = getPanelStruct(dt_la_files)
-comparePanelStruct(la_struct,miui_struct)
+miui_struct = getDTStruct(dt_miui_files)
+la_struct = getDTStruct(dt_la_files)
+compareDTStruct(la_struct,miui_struct)
