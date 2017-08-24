@@ -37,6 +37,9 @@ github_extra = []
 #sumbit_command = 'gerrit review --code-review +1'
 sumbit_command = ''
 
+# Lineage 15.0
+oreo = True
+
 # Helpers
 
 # Taken from http://stackoverflow.com/questions/8777753/converting-datetime-date-to-utc-timestamp-in-python/8778548#8778548
@@ -102,15 +105,16 @@ def makeCommitList(data,mod):
 	return commit_list[1:]+[tuple(buf)]
 
 def gather():
-		# Download data
 		data = []
-		# Download data
-		for repo in target: data += curlRepo('project:' + repo)
-		# Get personnal misc commits
-		data += curlRepo('owner:"theh2o64@gmail.com"')
-		# Download extra commits
-		if gerrit_extra != []:
-			for extra in gerrit_extra: data += curlRepo('change:' + extra)
+		if oreo: data += curlRepo('branch:lineage-15.0')
+		else:
+			# Download data
+			for repo in target: data += curlRepo('project:' + repo)
+			# Get personnal misc commits
+			data += curlRepo('owner:"theh2o64@gmail.com"')
+			# Download extra commits
+			if gerrit_extra != []:
+				for extra in gerrit_extra: data += curlRepo('change:' + extra)
 		# Make a commit struct
 		commits_list = makeCommitList(data,6)
 		# Remove unwanted strings
