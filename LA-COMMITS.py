@@ -106,7 +106,7 @@ def makeCommitList(data,mod):
 
 def gather():
 		data = []
-		if oreo: data += curlRepo('branch:lineage-15.0')
+		if oreo: data += curlRepo('branch:lineage-15.0 branch:lineage-15.0 -label:Code-Review=-1 -label:Code-Review=-2 ')
 		else:
 			# Download data
 			for repo in target: data += curlRepo('project:' + repo)
