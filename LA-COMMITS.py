@@ -39,6 +39,12 @@ sumbit_command = ''
 
 # Lineage 15.0
 oreo = True
+if oreo:
+	gerrit_extra += ['185491'] # vendor: lineage: Fix overlays
+	gerrit_extra += ['186529','186530','186531','186816'] # bt: CAF modifications
+	gerrit_extra += ['185639'] # bionic: Restore android_alarm.h kernel uapi header
+	gerrit_extra += ['185671'] # native: Restore VM memory overrides
+	gerrit_extra += ['186687'] # releasetools: don't assert device
 
 # Helpers
 
@@ -106,15 +112,15 @@ def makeCommitList(data,mod):
 
 def gather():
 		data = []
-		if oreo: data += curlRepo('branch:lineage-15.0 branch:lineage-15.0 -label:Code-Review=-1 -label:Code-Review=-2 ')
+		if oreo: data += curlRepo('branch:lineage-15.0 branch:lineage-15.0 -label:Code-Review=-1 -label:Code-Review=-2 -projects:LineageOS/android_device_ -projects:LineageOS/android_kernel_ ')
 		else:
 			# Download data
 			for repo in target: data += curlRepo('project:' + repo)
 			# Get personnal misc commits
 			data += curlRepo('owner:"theh2o64@gmail.com"')
-			# Download extra commits
-			if gerrit_extra != []:
-				for extra in gerrit_extra: data += curlRepo('change:' + extra)
+		# Download extra commits
+		if gerrit_extra != []:
+			for extra in gerrit_extra: data += curlRepo('change:' + extra)
 		# Make a commit struct
 		commits_list = makeCommitList(data,6)
 		# Remove unwanted strings
